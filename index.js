@@ -16,14 +16,17 @@ module.exports = (pluginContext) => {
 //	const prefs  = pluginContext.preferences.get();
 	const shell  = pluginContext.shell;
 
-	let patterns = [ ];
+	let patterns, providers;
 
 	function startup() {
-		[ patterns ] = require('./code/Loader.js')(pluginContext, __dirname);
+		require('./code/Loader.js')(pluginContext, __dirname)
+			.then((data) => {
+				patterns = data.patterns;
+				providers = data.providers;
+			});
 	}
 
 	function search(query, res) {
-
 		//noinspection JSCheckFunctionSignatures
 		patterns.map((params, idx, patterns) => {
 			let { pattern, cmd, title, desc, icon, re } = params;

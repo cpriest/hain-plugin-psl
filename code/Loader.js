@@ -2,21 +2,34 @@
 require('json5/lib/require');
 const glob = require("glob");
 
-let { log } = require('./utils.js');
+let { log, indent } = require('./utils.js');
+
 
 module.exports = (pluginContext, PluginDir) => {
-
 	// Patterns from definition files, collected here and return
-	let patterns = [ ];
-
-	LoadDefinitionFiles(PluginDir + '/defs/*.json*');
+	let patterns  = [];
+	let providers = new Map();
 
 	/**
-	 * @param {string} fnMatch	A glob pattern of files to match
+	 * @param {string} globPattern    A glob pattern of files to match
+	 * @returns {Promise}
 	 */
-	function LoadDefinitionFiles(fnMatch) {
-		for(let file of glob.sync(fnMatch))
-			ParseDefinition(require(file));
+	function LoadDefinitionFiles(globPattern) {
+		return new Promise((fulfill, reject) => {
+			(new glob.Glob(globPattern, (err, matches) => {
+				for(let filepath of matches) {
+					try {
+						ParseDefinition(require(filepath));
+					} catch(e) {
+						log('While processing definition file: %s', filepath);
+						log(indent(e.stack));
+					}
+				}
+			})).on('end', (/** string[] */ files) => {
+				log(`Finished loading ${patterns.length} patterns and ${providers.size} providers from ${files.length} definition files.`);
+				fulfill({ patterns, providers });
+			});
+		});
 	}
 
 	/**
@@ -24,7 +37,21 @@ module.exports = (pluginContext, PluginDir) => {
 	 */
 	function ParseDefinition(def) {
 		patterns = patterns.concat(def.patterns || []);
+
+		for(let name of Object.keys(def.providers || { })) {
+			let pDef = def.providers[name],
+				ProviderClass;
+			try {
+				ProviderClass = require('./providers/' + pDef.type);
+
+				providers.set(name, new ProviderClass(pDef));
+			} catch(e) {
+				if(e.code === 'MODULE_NOT_FOUND')
+					e.message = `Unable to find provider module named '${pDef.type}' specified as type parameter for @${name} provider`;
+				throw e;
+			}
+		}
 	}
 
-	return [ patterns ];
+	return LoadDefinitionFiles(PluginDir + '/defs/*.json*');
 };

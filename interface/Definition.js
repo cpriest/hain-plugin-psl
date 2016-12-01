@@ -23,6 +23,7 @@
 
 /**
  * @typedef {object} ProviderDefinition
+ * @property {string} name    - The name of the provider
  * @property {string} type    - A string identifying the provider class name (Case Sensitive)
  */
 

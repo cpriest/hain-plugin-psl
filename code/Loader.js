@@ -1,6 +1,6 @@
 'use strict';
 require('json5/lib/require');
-const glob = require("glob");
+const Glob = require("glob").Glob;
 
 let { log, indent } = require('./utils.js');
 
@@ -16,7 +16,7 @@ module.exports = (pluginContext, PluginDir) => {
 	 */
 	function LoadDefinitionFiles(globPattern) {
 		return new Promise((fulfill, reject) => {
-			(new glob.Glob(globPattern, (err, matches) => {
+			(new Glob(globPattern, (err, matches) => {
 				for(let filepath of matches) {
 					try {
 						ParseDefinition(require(filepath));
@@ -41,6 +41,9 @@ module.exports = (pluginContext, PluginDir) => {
 		for(let name of Object.keys(def.providers || { })) {
 			let pDef = def.providers[name],
 				ProviderClass;
+
+			pDef.name = name;
+
 			try {
 				ProviderClass = require('./providers/' + pDef.type);
 

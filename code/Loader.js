@@ -1,7 +1,7 @@
 'use strict';
 require('json5/lib/require');
 const Glob = require("glob").Glob;
-
+const Pattern = require("./Pattern.js");
 let { log, indent } = require('./utils.js');
 
 
@@ -36,7 +36,9 @@ module.exports = (pluginContext, PluginDir) => {
 	 * @param {Definition} def
 	 */
 	function ParseDefinition(def) {
-		patterns = patterns.concat(def.patterns || []);
+		for(let pDef of def.patterns || []) {
+			patterns.push(new Pattern(pDef));
+		}
 
 		for(let name of Object.keys(def.providers || { })) {
 			let pDef = def.providers[name],

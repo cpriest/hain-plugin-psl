@@ -34,7 +34,7 @@ module.exports = (
 					});
 					this.Filepaths = this.Filepaths.concat(matches);
 				}).on('end', (matches) => {
-					if(Remaining-- == 0)
+					if(--Remaining == 0)
 						log(`Found ${this.Filepaths.length} files for @${this.def.name}`);
 				});
 			}

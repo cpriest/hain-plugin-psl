@@ -19,6 +19,7 @@ module.exports = (pluginContext) => {
 	let patterns, providers;
 
 	function startup() {
+		//noinspection JSUnresolvedFunction
 		require('./code/Loader.js')(pluginContext, __dirname)
 			.then((data) => {
 				patterns = data.patterns;

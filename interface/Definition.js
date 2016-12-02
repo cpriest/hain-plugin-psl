@@ -29,10 +29,17 @@
 
 /**
  * @typedef {object} FilesetProviderDefinition
- * @property {string|string[]} glob       - String patterns used as input to glob() for creating the fileset
- * @property {string|string[]} filters    - Regular expression strings whose matches will be removed from the fileset
- * @property {object} transforms          - A key/value set of perl style substitution command.
- *                                          title:  If present, any presentational use of a filename will use the transformed version
+ * @property {string|string[]} glob           - String patterns used as input to glob() for creating the fileset
+ * @property {string|string[]} filters        - Regular expression strings whose matches will be removed from the fileset
+ * @property {FilesetProviderOptions} options - Regular expression strings whose matches will be removed from the fileset
+ * @property {object} transforms              - A key/value set of perl style substitution command.
+ *                                              title:  If present, any presentational use of a filename will use the transformed version
+ */
+
+/**
+ * @typedef {object} FilesetProviderOptions
+ * @property {boolean} StripBaseDirectory     - Strips the directory path up to the first glob * for display (Default: true)
+ * @property {boolean} StripExtension         - Strips the file extension for display (Default: true)
  */
 
 /** @typedef {ProviderDefinition|FilesetProviderDefinition} ProviderDefinitions */

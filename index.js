@@ -4,12 +4,6 @@ let { log } = require('./code/utils.js');
 
 const path = require('path');
 
-function ExpandEnvVars(cmd) {
-	for(const name in process.env)
-		cmd = cmd.replace(`\$${name}}`, process.env[name]);
-	return cmd;
-}
-
 module.exports = (pluginContext) => {
 	const app    = pluginContext.app;
 	const logger = pluginContext.logger;
@@ -18,6 +12,9 @@ module.exports = (pluginContext) => {
 
 	let patterns, providers;
 
+	/**
+	 * Called when the plugin is first loaded
+	 */
 	function startup() {
 		//noinspection JSUnresolvedFunction
 		require('./code/Loader.js')(pluginContext, __dirname)
@@ -27,39 +24,33 @@ module.exports = (pluginContext) => {
 			});
 	}
 
+	/**
+	 * @param {string} query
+	 * @param res
+	 */
 	function search(query, res) {
-		//noinspection JSCheckFunctionSignatures
-		patterns.map((params, idx, patterns) => {
-			let { pattern, cmd, title, desc, icon, re } = params;
-
-			if(!re) {
-//				logger.log(`Created RegExp for ${pattern}`);
-				re = new RegExp(pattern, 'i');
-				patterns[idx].re = re;
-			}
-			if(re.test(query)) {
-				cmd = query.replace(re, ExpandEnvVars(cmd));
-				title = query.replace(re, ExpandEnvVars(title));
-				desc = query.replace(re, ExpandEnvVars(desc));
-
-//				logger.log(`${query} matched for /${pattern}/i, result: '${cmd}'`);
-
+		for(let objPattern of patterns) {
+			if(objPattern.matches(query)) {
 				res.add({
-					id: cmd,
-					title: title,
-					desc: desc,
-					icon: icon,
-					payload: { pattern, cmd, title, desc, icon, re },
-					group: 'PSL'
+					id     : objPattern.cmd,
+					title  : objPattern.title,
+					desc   : objPattern.desc,
+					icon   : objPattern.icon,
+//					payload: { pattern, cmd, title, desc, icon, re },
+					group  : 'PSL'
 				});
-			} else {
-//				logger.log(`${query} FAILED TO MATCH for /${pattern}/i`);
 			}
-		});
+		}
 	}
 
-	function execute(id, payload) {
-		shell.openItem(id);
+	/**
+	 * Executes the given cmd that was accepted by the user
+	 *
+	 * @param {string} cmd
+	 * @param {*} payload
+	 */
+	function execute(cmd, payload) {
+		shell.openItem(cmd);
 	}
 
 	function renderPreview(id, payload, render) {

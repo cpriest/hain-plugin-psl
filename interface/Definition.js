@@ -22,6 +22,14 @@
  */
 
 /**
+ * @typedef {object} MatchDefinition
+ * @property {string} cmd        - The command to be passed back to hain
+ * @property {string} title      - The title to be passed back to hain
+ * @property {string} desc       - The description to be passed back to hain
+ * @property {string} icon       - The icon to be passed back to hain
+ */
+
+/**
  * @typedef {object} ProviderDefinition
  * @property {string} name    - The name of the provider
  * @property {string} type    - A string identifying the provider class name (Case Sensitive)

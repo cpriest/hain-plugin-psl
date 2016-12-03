@@ -12,7 +12,7 @@
 		"group":    ""
 	},
 	"dependencies": {
-		"json5":       "0.5.x",
-		"glob":        "7.1.x"
+		"json5":     "0.5.x",
+		"glob":      "7.1.x"
 	}
 }

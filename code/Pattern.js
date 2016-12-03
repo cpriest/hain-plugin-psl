@@ -8,40 +8,48 @@ module.exports = (
 		 * @param {PatternDefinition} def
 		 */
 		constructor(def) {
-			this.def = def;
-			this.re = new RegExp(def.pattern, 'i');
+			this.def           = def;
+			this.ProviderNames = new Map();
+
+			// log(def.pattern);
+
+			// Locate and replace any @providerNames with (.+)
+			this.pattern =
+				def.pattern
+					.replace(/\(@(\w+?)\)/g,
+						(p0, p1) => {
+							this.ProviderNames.set(this.ProviderNames.size + 1, p1);
+							return '(.+)';
+						}
+					);
+
+			log(this.pattern, this.ProviderNames);
+
+			this.re = new RegExp(this.pattern, 'i');
 		}
 
 		/**
 		 * Checks the query for a match against this pattern
 		 * @param {string} query
-		 * @returns {boolean}
+		 * @returns {MatchDefinition[]}
 		 */
 		matches(query) {
-			this.query = query;
-			return this.re.test(query);
+			if(this.re.test(query)) {
+				if(this.ProviderNames.size == 0) {
+					return [{
+						cmd  : query.replace(this.re, Pattern.ExpandEnvVars(this.def.cmd)),
+						title: query.replace(this.re, Pattern.ExpandEnvVars(this.def.title)),
+						desc : query.replace(this.re, Pattern.ExpandEnvVars(this.def.desc)),
+						icon : query.replace(this.re, Pattern.ExpandEnvVars(this.def.icon)),
+					}];
+				}
+
+				let matches = this.re.exec(query);
+				log(matches);
+
+			}
+			return [];
 		}
-
-		/**
-		 * Replaces the pattern matches in the string with matches from the last query
-		 * @param {string} s
-		 * @returns {string}
-		 */
-		replace(s) {
-			return this.query.replace(this.re, Pattern.ExpandEnvVars(s));
-		}
-
-		/** @returns {string} - The expanded command per the match */
-		get cmd() { return this.replace(this.def.cmd); }
-
-		/** @returns {string} - The expanded title per the match */
-		get title() { return this.replace(this.def.title); }
-
-		/** @returns {string} - The expanded description per the match */
-		get desc() { return this.replace(this.def.desc); }
-
-		/** @returns {string} - The expanded icon per the match */
-		get icon() { return this.replace(this.def.icon); }
 
 		/**
 		 * @param {string} cmd

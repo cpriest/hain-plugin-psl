@@ -30,12 +30,12 @@ module.exports = (pluginContext) => {
 	 */
 	function search(query, res) {
 		for(let objPattern of patterns) {
-			if(objPattern.matches(query)) {
+			for(let match of objPattern.matches(query)) {
 				res.add({
-					id     : objPattern.cmd,
-					title  : objPattern.title,
-					desc   : objPattern.desc,
-					icon   : objPattern.icon,
+					id     : match.cmd,
+					title  : match.title,
+					desc   : match.desc,
+					icon   : match.icon,
 //					payload: { pattern, cmd, title, desc, icon, re },
 					group  : 'PSL'
 				});

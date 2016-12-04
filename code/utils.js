@@ -1,5 +1,12 @@
 'use strict';
 
+// const logger = require('oh-my-log/lib/node6');
+// let log = logger('PSL', {
+// 	prefix: '%__date:green [%__name:blue:bold]:',
+// 	func  : console.log,
+// });
+
+
 module.exports = class Util {
 	static log(...args) {
 		args.unshift('PSL: ');

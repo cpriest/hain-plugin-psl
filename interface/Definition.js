@@ -50,4 +50,9 @@
  * @property {boolean} StripExtension         - Strips the file extension for display (Default: true)
  */
 
+/**
+ * @typedef {Map} ProvidersMap   - Map of loaded Providers
+ * @property {Base} Base         - Base class for Providers
+ */
+
 /** @typedef {ProviderDefinition|FilesetProviderDefinition} ProviderDefinitions */

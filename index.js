@@ -1,8 +1,8 @@
 'use strict';
 
 let { log } = require('./code/utils.js');
-
 const path = require('path');
+const exec = require('child_process').exec;
 
 module.exports = (pluginContext) => {
 	const app    = pluginContext.app;
@@ -10,7 +10,7 @@ module.exports = (pluginContext) => {
 //	const prefs  = pluginContext.preferences.get();
 	const shell  = pluginContext.shell;
 
-	let patterns, providers;
+	let patterns;
 
 	/**
 	 * Called when the plugin is first loaded
@@ -20,7 +20,6 @@ module.exports = (pluginContext) => {
 		require('./code/Loader.js')(pluginContext, __dirname)
 			.then((data) => {
 				patterns = data.patterns;
-				providers = data.providers;
 			});
 	}
 
@@ -50,7 +49,8 @@ module.exports = (pluginContext) => {
 	 * @param {*} payload
 	 */
 	function execute(cmd, payload) {
-		shell.openItem(cmd);
+		exec(cmd);
+//		log(shell.openItem(cmd))
 	}
 
 	function renderPreview(id, payload, render) {

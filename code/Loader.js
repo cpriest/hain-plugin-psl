@@ -1,14 +1,17 @@
 'use strict';
+
 require('json5/lib/require');
 const Glob = require("glob").Glob;
 const Pattern = require("./Pattern.js");
+
+/** @type ProvidersMap */
+const Providers = require('./providers/Providers');
 let { log, indent } = require('./utils.js');
 
 
 module.exports = (pluginContext, PluginDir) => {
 	// Patterns from definition files, collected here and return
 	let patterns  = [];
-	let providers = new Map();
 
 	/**
 	 * @param {string} globPattern    A glob pattern of files to match
@@ -26,8 +29,8 @@ module.exports = (pluginContext, PluginDir) => {
 					}
 				}
 			})).on('end', (/** string[] */ files) => {
-				log(`Finished loading ${patterns.length} patterns and ${providers.size} providers from ${files.length} definition files.`);
-				fulfill({ patterns, providers });
+				log(`Finished loading ${patterns.length} patterns and ${Providers.size} providers from ${files.length} definition files.`);
+				fulfill({ patterns });
 			});
 		});
 	}
@@ -49,7 +52,7 @@ module.exports = (pluginContext, PluginDir) => {
 			try {
 				ProviderClass = require('./providers/' + pDef.type);
 
-				providers.set(name, new ProviderClass(pDef));
+				Providers.set(name, new ProviderClass(pDef));
 			} catch(e) {
 				if(e.code === 'MODULE_NOT_FOUND')
 					e.message = `Unable to find provider module named '${pDef.type}' specified as type parameter for @${name} provider`;

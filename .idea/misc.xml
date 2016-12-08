@@ -24,10 +24,6 @@
       <PhpUnitSettings />
     </phpunit_settings>
   </component>
-  <component name="SshConsoleOptionsProvider">
-    <option name="myEncoding" value="UTF-8" />
-    <option name="myConnectionType" value="NONE" />
-  </component>
   <component name="UnicodeBrowser">
     <option name="fontName" value="Monoisome" />
   </component>

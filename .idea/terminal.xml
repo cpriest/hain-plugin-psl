@@ -2,6 +2,5 @@
 <project version="4">
   <component name="TerminalProjectOptionsProvider">
     <option name="myShellPath" value="&quot;cmd.exe&quot; /A /U" />
-    <option name="myStartingDirectory" value="$PROJECT_DIR$/local" />
   </component>
 </project>

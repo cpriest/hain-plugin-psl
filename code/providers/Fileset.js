@@ -22,73 +22,68 @@ module.exports = (
 		 * @returns {MatchDefinition[]}
 		 */
 		matches(query) {
-			let matches = this.Filepaths;
+			let matches = Array.from(this.Filepaths.keys());
 
-			log(`Fileset Provider Query: ${query}, parts: ${query.split(/\s+/i)}`);
 			for(let part of query.split(/\s+/i)) {
 				let re  = new RegExp(part, 'i');
 				matches = matches.filter(re.test, re);
 			}
 
-			return matches.map((filepath) => {
-				let [filename, basename] = this.ParseFilepath(filepath);
-				return {
-					cmd  : filepath,
-					title: basename,
-					desc : basename,
-					icon : basename,
-				}
-			});
-		}
+			let MaxMatches = (this.def.options && this.def.options.MaxMatches) || Providers.DefaultMaxMatches;
 
-		/**
-		 * Returns the filename and basename for the given filepath
-		 * @param filepath
-		 * @return {[ {string}, {string} ]}
-		 */
-		ParseFilepath(filepath) {
-			let filename = filepath;
-
-			if(this.def.options.StripBaseDirectory !== false ) {
-				filename = this.Basepaths
-					.reduce((acc, basepath) => {
-						return filepath.replace(basepath, '');
-					}, filepath);
-			}
-
-			let basename = filename;
-			if(this.def.options.StripExtension !== false) {
-				basename = filename.replace(path.parse(filepath)['ext'], '')
-			}
-			return [filename, basename];
+			return matches
+				.reduce((acc, item) => {
+					if(acc.length < MaxMatches)
+						acc.push(item);
+					return acc;
+				}, [])
+				.map((filepath) =>
+					this.Filepaths.get(filepath)
+				);
 		}
 
 		/**
 		 * Builds the fileset according to the definition
 		 */
 		BuildFileset() {
-			this.Filepaths = [];
-			this.Basepaths = new Set();
+			this.Filepaths = new Map();
 
 			let Remaining = (this.def.glob || []).length;
 
 			for(let globPattern of this.def.glob || []) {
-				this.Basepaths.add(this.FindBasepath(globPattern));
+				let globBasepath = this.FindBasepath(globPattern);
+
 				new Glob(globPattern, (/** string[] */err, /** string[] */ matches) => {
-					matches        = matches.filter((filepath) => {
-						for(let filter of this.def.filters || []) {
-							if(filepath.match(new RegExp(filter)))
-								return false;
-						}
-						return true;
-					});
-					this.Filepaths = this.Filepaths.concat(matches);
+					matches.filter(
+						(filepath) => {
+							for(let filter of this.def.filters || []) {
+								if(filepath.match(new RegExp(filter)))
+									return false;
+							}
+							return true;
+						})
+						.forEach((filepath) => {
+							let shortPath = filepath.replace(globBasepath, ''),
+								r         = path.parse(shortPath),
+								title     = `${shortPath.replace(r.ext, '')}`;
+
+							this.Filepaths.set(title, {
+								path : filepath,
+								title: title,
+								name : r.name,
+								base : r.base,
+							});
+						});
 				}).on('end', (matches) => {
-					if(--Remaining == 0)
-						log(`Found ${this.Filepaths.length} files for @${this.def.name}`);
+					if(--Remaining == 0) {
+						log(`Found ${this.Filepaths.size} files for @${this.def.name}`);
+
+						if(this.Filepaths.size > 0)
+							this.Replacables = Object.keys(this.Filepaths.values().next().value);
+					}
 				});
 			}
-			this.Basepaths = Array.from(this.Basepaths);
+
 		}
 
 		/**

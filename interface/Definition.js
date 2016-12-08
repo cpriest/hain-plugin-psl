@@ -31,28 +31,34 @@
 
 /**
  * @typedef {object} ProviderDefinition
- * @property {string} name    - The name of the provider
- * @property {string} type    - A string identifying the provider class name (Case Sensitive)
+ * @property {string} name             - The name of the provider
+ * @property {string} type             - A string identifying the provider class name (Case Sensitive)
+ * @property {string[]} Replacables    - An array of strings that are available for each match from the provider,
+ *                                        these names can be referenced in the cmd/title/desc/icon values of a pattern.
+ * @property {ProviderOptions} options - Key/Value items which specify options for the provider
  */
 
 /**
- * @typedef {object} FilesetProviderDefinition
+ * @typedef {ProviderDefinition} FilesetProviderDefinition
  * @property {string|string[]} glob           - String patterns used as input to glob() for creating the fileset
  * @property {string|string[]} filters        - Regular expression strings whose matches will be removed from the fileset
  * @property {FilesetProviderOptions} options - Regular expression strings whose matches will be removed from the fileset
- * @property {object} transforms              - A key/value set of perl style substitution command.
- *                                              title:  If present, any presentational use of a filename will use the transformed version
+ * //@property {object} transforms              - A key/value set of perl style substitution command.
+ * //                                             title:  If present, any presentational use of a filename will use the transformed version
  */
 
 /**
- * @typedef {object} FilesetProviderOptions
- * @property {boolean} StripBaseDirectory     - Strips the directory path up to the first glob * for display (Default: true)
- * @property {boolean} StripExtension         - Strips the file extension for display (Default: true)
+ * @typedef {object} ProviderOptions
+ * @property {int} MaxMatches            - The maximum items a provider should return (Default: 10)
  */
 
 /**
- * @typedef {Map} ProvidersMap   - Map of loaded Providers
- * @property {Base} Base         - Base class for Providers
+ * @typedef {ProviderOptions} FilesetProviderOptions
+ */
+
+/**
+ * @typedef {Map} ProvidersMap       - Map of loaded Providers
+ * @property {Provider} Provider     - Base class for Providers
  */
 
 /** @typedef {ProviderDefinition|FilesetProviderDefinition} ProviderDefinitions */

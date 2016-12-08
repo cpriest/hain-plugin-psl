@@ -11,17 +11,24 @@ module.exports = (
 		 * @param {PatternDefinition} def
 		 */
 		constructor(def) {
-			this.def           = def;
-			this.ProviderNames = new Map();
+			this.def            = def;
+			this.ProviderNames  = [];
+			this.ReplacableKeys = ['cmd', 'title', 'desc', 'icon'];
 
-			// log(def.pattern);
+			for(let x of this.ReplacableKeys) {
+				// Expand Environment Variables
+				this.def[x] = Pattern.ExpandEnvVars(this.def[x]);
+
+				// Sanitize any remaining ${...} present
+				this.def[x] = this.def[x].replace(/\${(.+?)}/, '\\${$1}');
+			}
 
 			// Locate and replace any @providerNames with (.+)
 			this.pattern =
 				def.pattern
 					.replace(/\(@(\w+?)\)/g,
 						(p0, p1) => {
-							this.ProviderNames.set(this.ProviderNames.size + 1, p1);
+							this.ProviderNames.push(p1);
 							return '(.+)';
 						}
 					);
@@ -30,6 +37,19 @@ module.exports = (
 				log('WARNING: Providers do not currently support more than one provider per pattern, if you have a use case for this please submit a ticket.');
 
 			this.re = new RegExp(this.pattern, 'i');
+
+			setTimeout(() => {
+				if(this.ProviderNames.length) {
+					let name        = this.ProviderNames[0],
+						objProvider = Providers.get(name);
+					if(!objProvider)
+						throw new Error(`Unable to locate provider named @${name} specified in pattern: ${this.def.pattern}`);
+
+					let re = new RegExp('\{(' + objProvider.Replacables.join('|') + ')\}');
+					for(let x of this.ReplacableKeys)
+						this.def[x] = this.def[x].replace(re, '\${md.$1}');
+				}
+			}, 100);
 		}
 
 		/**
@@ -41,33 +61,29 @@ module.exports = (
 			if(this.re.test(query)) {
 				if(this.ProviderNames.size == 0) {
 					return [{
-						cmd  : query.replace(this.re, Pattern.ExpandEnvVars(this.def.cmd)),
-						title: query.replace(this.re, Pattern.ExpandEnvVars(this.def.title)),
-						desc : query.replace(this.re, Pattern.ExpandEnvVars(this.def.desc)),
-						icon : query.replace(this.re, Pattern.ExpandEnvVars(this.def.icon)),
+						cmd  : query.replace(this.re, this.def.cmd),
+						title: query.replace(this.re, this.def.title),
+						desc : query.replace(this.re, this.def.desc),
+						icon : query.replace(this.re, this.def.icon),
 					}];
 				}
 
 				let matches = this.re.exec(query);
-				let index = 1, name = this.ProviderNames.get(1);
-
-				log(matches);
+				let index   = 1, name = this.ProviderNames[0];
 
 				/** @type {Provider} */
 				let objProvider = Providers.get(name);
-				if(!objProvider)
-					throw new Error(`Unable to locate provider named @${name} specified in pattern: ${this.def.pattern}`);
 
 				return objProvider
-						.matches(matches[index])
-						.map((md) => {
-							return {
-								cmd  : Pattern.ExpandEnvVars(this.def.cmd).replace('$1', md.cmd),
-								title: Pattern.ExpandEnvVars(this.def.title).replace('$1', md.title),
-								desc : Pattern.ExpandEnvVars(this.def.desc).replace('$1', md.desc),
-								icon : Pattern.ExpandEnvVars(this.def.icon).replace('$1', md.icon),
-							}
-						});
+					.matches(matches[index])
+					.map((md) => {
+						return {
+							cmd  : (new Function('md', 'return `' + this.def.cmd + '`;'))(md),
+							title: (new Function('md', 'return `' + this.def.title + '`;'))(md),
+							desc : (new Function('md', 'return `' + this.def.desc + '`;'))(md),
+							icon : (new Function('md', 'return `' + this.def.icon + '`;'))(md),
+						}
+					});
 			}
 			return [];
 		}

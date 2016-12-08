@@ -10,6 +10,7 @@ module.exports = (() => {
 		 */
 		constructor(def) {
 			this.def = def;
+			this.Replacables = [];
 		}
 
 		/**
@@ -21,6 +22,8 @@ module.exports = (() => {
 		}
 	}
 	Providers.Provider = Provider;
+
+	Providers.DefaultMaxMatches = 10;
 
 	return Providers;
 })();

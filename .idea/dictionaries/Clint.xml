@@ -4,6 +4,7 @@
       <w>basepath</w>
       <w>jira</w>
       <w>queryable</w>
+      <w>replacables</w>
     </words>
   </dictionary>
 </component>

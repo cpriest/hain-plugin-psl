@@ -1,0 +1,25 @@
+{
+	patterns:  [
+		{
+			pattern: '^ssh (@sshFiles)',
+			cmd:     'SecureCRT.exe /T /S {title}',
+			title:   'Open SSH Session to {title}',
+			desc:    '',
+			icon:    '',
+		}
+	],
+	providers: {
+		sshFiles: {
+			type:    'Fileset',
+			glob:    [
+				'C:/sync/settings/SecureCRT/Sessions/**/*.ini',
+			],
+			filters: [
+				'FolderData'
+			],
+			options: {
+//				MaxMatches:	10,
+			}
+		}
+	}
+}

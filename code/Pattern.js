@@ -59,7 +59,7 @@ module.exports = (
 		 */
 		matches(query) {
 			if(this.re.test(query)) {
-				if(this.ProviderNames.size == 0) {
+				if(this.ProviderNames.length == 0) {
 					return [{
 						cmd  : query.replace(this.re, this.def.cmd),
 						title: query.replace(this.re, this.def.title),

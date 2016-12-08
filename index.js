@@ -49,8 +49,10 @@ module.exports = (pluginContext) => {
 	 * @param {*} payload
 	 */
 	function execute(cmd, payload) {
-		exec(cmd);
-//		log(shell.openItem(cmd))
+		if(cmd.match(/^[\w\d]+:\/\//))
+			shell.openItem(cmd);
+		else
+			exec(cmd);
 	}
 
 	function renderPreview(id, payload, render) {

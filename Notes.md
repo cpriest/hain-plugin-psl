@@ -2,9 +2,10 @@
 1. ~~Separate definition files~~
 2. Move some FilesetProvider functionality into Provider base class or a new sub-class as commonalities reveal themselves
 4. auto-complete Providers
-    1. Queryable - Google Suggest
+    1. Queryable - Google Suggest (w, w/o preview)
     2. Queryable - API (Github)
     3. ~~Filesystem - Directory / Pattern Matching~~
+5. Negative Search Filter (dep -chi)
 
 
 5. My own binding to execute /quit (for dev)
@@ -12,3 +13,10 @@
 
 
 # YAGNI
+
+
+# Ideas
+1. /psl commands
+    1. /psl config x.y=z
+3. Provider sub-commands (/hide, /clear (hidden), etc.) (/hide stored in localStorage as pref)
+4. FilesetProvider sub-commands (/hide (inherited, etc), /rm, ...)

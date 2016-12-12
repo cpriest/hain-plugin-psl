@@ -4,5 +4,6 @@
     <file url="PROJECT" libraries="{electron-DefinitelyTyped, node-DefinitelyTyped, node-webkit-DefinitelyTyped}" />
     <includedPredefinedLibrary name="ECMAScript 6" />
     <includedPredefinedLibrary name="Node.js Core" />
+    <excludedPredefinedLibrary name="hain/app/node_modules" />
   </component>
 </project>

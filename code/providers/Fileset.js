@@ -3,11 +3,13 @@
 let Providers       = require('./Providers');
 const path          = require("path");
 const Glob          = require("glob").Glob;
+
+//noinspection JSUnusedLocalSymbols
 let { log, indent } = require('../utils');
 
 //noinspection JSUnusedLocalSymbols
 module.exports = (
-	class FilesetProvider extends Providers.Provider {
+	class FilesetProvider extends Providers.MatchlistProvider {
 		/**
 		 * @constructor
 		 * @param {FilesetProviderDefinition} def
@@ -19,49 +21,9 @@ module.exports = (
 		}
 
 		/**
-		 * @param {string} query    A pattern match value to query against this provider
-		 * @returns {MatchDefinition[]}
-		 */
-		matches(query) {
-			let matches = Array.from(this.Filepaths.keys()),
-				re;
-
-			for(let part of query.split(/\s+/i)) {
-				if(part.substr(0, 1) == '-') {
-					part = part.substr(1);
-					if(part.length) {
-						re = new RegExp(part, 'i');
-
-						let subMatches = matches.filter(re.test, re);
-						matches        = matches.filter((item) => {
-							return subMatches.indexOf(item) == -1;
-						})
-					}
-				} else {
-					re      = new RegExp(part, 'i');
-					matches = matches.filter(re.test, re);
-				}
-			}
-
-			let MaxMatches = (this.def.options && this.def.options.MaxMatches) || Providers.DefaultMaxMatches;
-
-			return matches
-				.reduce((acc, item) => {
-					if(acc.length < MaxMatches)
-						acc.push(item);
-					return acc;
-				}, [])
-				.map((filepath) =>
-					this.Filepaths.get(filepath)
-				);
-		}
-
-		/**
 		 * Builds the fileset according to the definition
 		 */
 		BuildFileset() {
-			this.Filepaths = new Map();
-
 			let Remaining = (this.def.glob || []).length;
 
 			for(let globPattern of this.def.glob || []) {
@@ -81,7 +43,7 @@ module.exports = (
 								r         = path.parse(shortPath),
 								title     = `${shortPath.replace(r.ext, '')}`;
 
-							this.Filepaths.set(title, {
+							this.Matchlist.set(title, {
 								path : filepath,
 								title: title,
 								name : r.name,
@@ -90,11 +52,11 @@ module.exports = (
 						});
 				}).on('end', (matches) => {
 					if(--Remaining == 0) {
-						log(`Found ${this.Filepaths.size} files for @${this.def.name}`);
+						log(`Found ${this.Matchlist.size} files for @${this.def.name}`);
 
-						if(this.Filepaths.size > 0)
+						if(this.Matchlist.size > 0)
 							this.Replacables =
-								Object.keys(this.Filepaths.values()
+								Object.keys(this.Matchlist.values()
 									.next().value);
 					}
 				});

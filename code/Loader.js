@@ -6,6 +6,8 @@ const Pattern = require("./Pattern.js");
 
 /** @type ProvidersMap */
 const Providers = require('./providers/Providers');
+
+//noinspection JSUnusedLocalSymbols
 let { log, indent } = require('./utils.js');
 
 

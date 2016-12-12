@@ -1,14 +1,16 @@
 # Features
 1. ~~Separate definition files~~
-2. Move some FilesetProvider functionality into Provider base class or a new sub-class as commonalities reveal themselves
-4. auto-complete Providers
+2. ~~Move some FilesetProvider functionality into Provider base class or a new sub-class as commonalities reveal themselves~~
+3. Sort by recently used alphabetically, then the rest, alphabetically
+4. Automatic icon identification if unspecified
+5. auto-complete Providers
     1. Queryable - Google Suggest (w, w/o preview)
     2. Queryable - API (Github)
     3. ~~Filesystem - Directory / Pattern Matching~~
-5. Negative Search Filter (dep -chi)
+6. ~~Negative Search Filter (dep -chi)~~
 
 
-5. My own binding to execute /quit (for dev)
+7. My own binding to execute /quit (for dev)
 
 
 

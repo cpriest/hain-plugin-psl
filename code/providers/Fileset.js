@@ -5,6 +5,7 @@ const path          = require("path");
 const Glob          = require("glob").Glob;
 let { log, indent } = require('../utils');
 
+//noinspection JSUnusedLocalSymbols
 module.exports = (
 	class FilesetProvider extends Providers.Provider {
 		/**
@@ -22,11 +23,24 @@ module.exports = (
 		 * @returns {MatchDefinition[]}
 		 */
 		matches(query) {
-			let matches = Array.from(this.Filepaths.keys());
+			let matches = Array.from(this.Filepaths.keys()),
+				re;
 
 			for(let part of query.split(/\s+/i)) {
-				let re  = new RegExp(part, 'i');
-				matches = matches.filter(re.test, re);
+				if(part.substr(0, 1) == '-') {
+					part = part.substr(1);
+					if(part.length) {
+						re = new RegExp(part, 'i');
+
+						let subMatches = matches.filter(re.test, re);
+						matches        = matches.filter((item) => {
+							return subMatches.indexOf(item) == -1;
+						})
+					}
+				} else {
+					re      = new RegExp(part, 'i');
+					matches = matches.filter(re.test, re);
+				}
 			}
 
 			let MaxMatches = (this.def.options && this.def.options.MaxMatches) || Providers.DefaultMaxMatches;
@@ -79,7 +93,9 @@ module.exports = (
 						log(`Found ${this.Filepaths.size} files for @${this.def.name}`);
 
 						if(this.Filepaths.size > 0)
-							this.Replacables = Object.keys(this.Filepaths.values().next().value);
+							this.Replacables =
+								Object.keys(this.Filepaths.values()
+									.next().value);
 					}
 				});
 			}

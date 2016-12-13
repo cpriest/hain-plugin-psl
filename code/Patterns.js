@@ -3,6 +3,8 @@
 //noinspection JSUnusedLocalSymbols
 let { log, indent } = require('./utils.js');
 
+let Patterns = new Map();
+
 module.exports = (pluginContext, PluginDir) => {
 	/** @type {ProvidersMap} */
 	let Providers = require('./providers/Providers.js')(pluginContext, PluginDir);
@@ -13,7 +15,9 @@ module.exports = (pluginContext, PluginDir) => {
 		 * @param {PatternDefinition} def
 		 */
 		constructor(def) {
-			this.def            = def;
+			this.def = def;
+			this.id  = this.def.pattern;
+
 			this.ProviderNames  = [];
 			this.ReplacableKeys = ['cmd', 'title', 'desc', 'icon'];
 
@@ -101,5 +105,7 @@ module.exports = (pluginContext, PluginDir) => {
 		}
 	}
 
-	return Pattern;
+	Patterns.Pattern = Pattern;
+
+	return Patterns;
 };

@@ -6,7 +6,6 @@ let { log, indent } = require('../utils');
 let Providers = new Map();
 
 module.exports = (pluginContext, PluginDir) => {
-	let localStorage = pluginContext.localStorage;
 
 	class Provider {
 		/**
@@ -15,6 +14,8 @@ module.exports = (pluginContext, PluginDir) => {
 		 */
 		constructor(def) {
 			this.def = def;
+			this.id  = this.def.name;
+
 			this.Replacables = [];
 		}
 
@@ -41,7 +42,6 @@ module.exports = (pluginContext, PluginDir) => {
 		constructor(def) {
 			super(def);
 			this.Matchlist = new Map();
-
 		}
 
 		/**
@@ -82,7 +82,7 @@ module.exports = (pluginContext, PluginDir) => {
 				);
 		}
 	}
-	Providers.Provider = Provider;
+	Providers.Provider          = Provider;
 	Providers.MatchlistProvider = MatchlistProvider;
 
 	Providers.DefaultMaxMatches = 10;

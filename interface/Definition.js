@@ -57,8 +57,13 @@
  */
 
 /**
+ * @typedef {Map} PatternsMap        - Map of loaded Patterns
+ * @property {Function} Pattern      - Base class for a Pattern
+ */
+
+/**
  * @typedef {Map} ProvidersMap       - Map of loaded Providers
- * @property {Provider} Provider     - Base class for Providers
+ * @property {Function} Provider     - Base class for Providers
  */
 
 /** @typedef {ProviderDefinition|FilesetProviderDefinition} ProviderDefinitions */

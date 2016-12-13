@@ -1,26 +1,26 @@
 'use strict';
 
+//noinspection JSUnusedLocalSymbols
 let { log } = require('./code/utils.js');
-const path = require('path');
 const exec = require('child_process').exec;
 
 module.exports = (pluginContext) => {
+	//noinspection JSUnusedLocalSymbols
 	const app    = pluginContext.app;
+	//noinspection JSUnusedLocalSymbols
 	const logger = pluginContext.logger;
 //	const prefs  = pluginContext.preferences.get();
 	const shell  = pluginContext.shell;
 
-	let patterns;
+	/** @type PatternsMap */
+	let Patterns = require('./code/Patterns.js')(pluginContext, __dirname);
 
 	/**
 	 * Called when the plugin is first loaded
 	 */
 	function startup() {
 		//noinspection JSUnresolvedFunction
-		require('./code/Loader.js')(pluginContext, __dirname)
-			.then((data) => {
-				patterns = data.patterns;
-			});
+		require('./code/Loader.js')(pluginContext, __dirname);
 	}
 
 	/**
@@ -28,7 +28,7 @@ module.exports = (pluginContext) => {
 	 * @param res
 	 */
 	function search(query, res) {
-		for(let objPattern of patterns) {
+		for(let objPattern of Patterns.values()) {
 			for(let match of objPattern.matches(query)) {
 				res.add({
 					id     : match.cmd,

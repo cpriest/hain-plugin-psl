@@ -1,12 +1,12 @@
 'use strict';
 
-/** @type {ProvidersMap} */
-let Providers       = require('./providers/Providers.js');
-
 //noinspection JSUnusedLocalSymbols
 let { log, indent } = require('./utils.js');
 
-module.exports = (
+module.exports = (pluginContext, PluginDir) => {
+	/** @type {ProvidersMap} */
+	let Providers = require('./providers/Providers.js')(pluginContext, PluginDir);
+
 	class Pattern {
 		/**
 		 * @constructor
@@ -51,7 +51,7 @@ module.exports = (
 					for(let x of this.ReplacableKeys)
 						this.def[x] = this.def[x].replace(re, '\${md.$1}');
 				}
-			}, 100);
+			}, 500);
 		}
 
 		/**
@@ -100,4 +100,6 @@ module.exports = (
 			return cmd;
 		}
 	}
-);
+
+	return Pattern;
+};

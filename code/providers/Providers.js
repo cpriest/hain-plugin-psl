@@ -3,8 +3,10 @@
 //noinspection JSUnusedLocalSymbols
 let { log, indent } = require('../utils');
 
-module.exports = (() => {
-	let Providers = new Map();
+let Providers = new Map();
+
+module.exports = (pluginContext, PluginDir) => {
+	let localStorage = pluginContext.localStorage;
 
 	class Provider {
 		/**
@@ -39,6 +41,7 @@ module.exports = (() => {
 		constructor(def) {
 			super(def);
 			this.Matchlist = new Map();
+
 		}
 
 		/**
@@ -85,4 +88,4 @@ module.exports = (() => {
 	Providers.DefaultMaxMatches = 10;
 
 	return Providers;
-})();
+};

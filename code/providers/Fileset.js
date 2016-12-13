@@ -1,6 +1,5 @@
 'use strict';
 
-let Providers       = require('./Providers');
 const path          = require("path");
 const Glob          = require("glob").Glob;
 
@@ -8,7 +7,9 @@ const Glob          = require("glob").Glob;
 let { log, indent } = require('../utils');
 
 //noinspection JSUnusedLocalSymbols
-module.exports = (
+module.exports = (pluginContext, PluginDir) => {
+	let Providers = require('./Providers')(pluginContext, PluginDir);
+
 	class FilesetProvider extends Providers.MatchlistProvider {
 		/**
 		 * @constructor
@@ -76,4 +77,5 @@ module.exports = (
 			return globPattern;
 		}
 	}
-);
+	return FilesetProvider;
+};

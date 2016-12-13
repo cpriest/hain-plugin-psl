@@ -2,16 +2,15 @@
 
 require('json5/lib/require');
 const Glob = require("glob").Glob;
-const Pattern = require("./Pattern.js");
-
-/** @type ProvidersMap */
-const Providers = require('./providers/Providers');
 
 //noinspection JSUnusedLocalSymbols
 let { log, indent } = require('./utils.js');
 
-
 module.exports = (pluginContext, PluginDir) => {
+	/** @type ProvidersMap */
+	const Providers = require('./providers/Providers')(pluginContext, PluginDir);
+	const Pattern = require("./Pattern.js")(pluginContext, PluginDir);
+
 	// Patterns from definition files, collected here and return
 	let patterns  = [];
 
@@ -26,7 +25,7 @@ module.exports = (pluginContext, PluginDir) => {
 					try {
 						ParseDefinition(require(filepath));
 					} catch(e) {
-						log('While processing definition file: %s', filepath);
+						log(`While processing definition file: ${filepath}`);
 						log(indent(e.stack));
 					}
 				}
@@ -52,7 +51,7 @@ module.exports = (pluginContext, PluginDir) => {
 			pDef.name = name;
 
 			try {
-				ProviderClass = require('./providers/' + pDef.type);
+				ProviderClass = require('./providers/' + pDef.type)(pluginContext, PluginDir);
 
 				Providers.set(name, new ProviderClass(pDef));
 			} catch(e) {

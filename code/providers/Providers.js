@@ -1,7 +1,7 @@
 'use strict';
 
 //noinspection JSUnusedLocalSymbols
-let { log, indent } = require('../utils');
+let { log, indent, reQuery } = require('../utils.js');
 
 let Providers = new Map();
 
@@ -49,26 +49,7 @@ module.exports = (pluginContext, PluginDir) => {
 		 * @returns {MatchDefinition[]}
 		 */
 		matches(query) {
-			let matches = Array.from(this.Matchlist.keys()),
-				re;
-
-			for(let part of query.split(/\s+/i)) {
-				if(part.substr(0, 1) == '-') {
-					if(part.length == 1)
-						continue;
-
-					re = new RegExp(part.substr(1), 'i');
-
-					let subMatches = matches.filter(re.test, re);
-
-					matches = matches.filter((item) => {
-						return subMatches.indexOf(item) == -1;
-					})
-				} else {
-					re      = new RegExp(part, 'i');
-					matches = matches.filter(re.test, re);
-				}
-			}
+			let matches = reQuery(query, Array.from(this.Matchlist.keys()));
 
 			let MaxMatches = (this.def.options && this.def.options.MaxMatches) || Providers.DefaultMaxMatches;
 

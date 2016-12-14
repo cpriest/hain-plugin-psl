@@ -18,7 +18,7 @@
 
 # Refactoring
 1. Separate out Pattern vs Patterns w/ Providers into different classes (Provider Patterns have much more code)
-2. Perhaps move PCRE Matching of {string[]} to a utility function
+2. ~~Perhaps move PCRE Matching of {string[]} to a utility function~~
 3. More elegant solution to recent items list sorting, seems clunky as-is.
 4. Move ExpandVars into Utils
 5. Switch to import * from * rather than require?

@@ -1,7 +1,7 @@
 'use strict';
 
-const path          = require("path");
-const Glob          = require("glob").Glob;
+const path = require("path");
+const Glob = require("glob").Glob;
 
 //noinspection JSUnusedLocalSymbols
 let { log, indent } = require('../utils');
@@ -31,8 +31,8 @@ module.exports = (pluginContext, PluginDir) => {
 				let globBasepath = this.FindBasepath(globPattern);
 
 				new Glob(globPattern, (/** string[] */err, /** string[] */ matches) => {
-					matches.filter(
-						(filepath) => {
+					matches
+						.filter((filepath) => {
 							for(let filter of this.def.filters || []) {
 								if(filepath.match(new RegExp(filter)))
 									return false;
@@ -55,14 +55,15 @@ module.exports = (pluginContext, PluginDir) => {
 					if(--Remaining == 0) {
 						log(`Found ${this.Matchlist.size} files for @${this.def.name}`);
 
-						if(this.Matchlist.size > 0)
-							this.Replacables =
-								Object.keys(this.Matchlist.values()
-									.next().value);
+						if(this.Matchlist.size > 0) {
+							this.Replacables = Object.keys(
+								this.Matchlist.values()
+									.next().value
+							);
+						}
 					}
 				});
 			}
-
 		}
 
 		/**

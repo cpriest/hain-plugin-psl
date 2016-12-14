@@ -54,15 +54,16 @@ module.exports = (pluginContext, PluginDir) => {
 
 			for(let part of query.split(/\s+/i)) {
 				if(part.substr(0, 1) == '-') {
-					part = part.substr(1);
-					if(part.length) {
-						re = new RegExp(part, 'i');
+					if(part.length == 1)
+						continue;
 
-						let subMatches = matches.filter(re.test, re);
-						matches        = matches.filter((item) => {
-							return subMatches.indexOf(item) == -1;
-						})
-					}
+					re = new RegExp(part.substr(1), 'i');
+
+					let subMatches = matches.filter(re.test, re);
+
+					matches = matches.filter((item) => {
+						return subMatches.indexOf(item) == -1;
+					})
 				} else {
 					re      = new RegExp(part, 'i');
 					matches = matches.filter(re.test, re);

@@ -19,7 +19,6 @@ module.exports = (pluginContext) => {
 	 * Called when the plugin is first loaded
 	 */
 	function startup() {
-		//noinspection JSUnresolvedFunction
 		require('./code/Loader.js')(pluginContext, __dirname);
 	}
 
@@ -49,8 +48,9 @@ module.exports = (pluginContext) => {
 	 * @param {*} payload
 	 */
 	function execute(cmd, payload) {
-		let objPattern = Patterns.get(payload.PatternID);
-		objPattern.onExecute(payload.match);
+		Patterns.get(payload.PatternID)
+			.onExecute(payload.match);
+
 		if(cmd.match(/^[\w\d]+:\/\//))
 			shell.openItem(cmd);
 		else

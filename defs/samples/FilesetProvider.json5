@@ -11,6 +11,7 @@
 	providers: {
 		sshFiles: {
 			type:    'Fileset',
+// 				FilesetProvider emits {title}, {name}, {base} and {path}
 			glob:    [
 				'C:/sync/settings/SecureCRT/Sessions/**/*.ini',
 			],

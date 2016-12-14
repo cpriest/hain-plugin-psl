@@ -131,17 +131,14 @@ module.exports = (pluginContext, PluginDir) => {
 					if(aRecentIdx == bRecentIdx)
 						return a.title.localeCompare(b.title);
 
-					if(aRecentIdx >= 0 && bRecentIdx >= 0) {
-						if(aRecentIdx < bRecentIdx)
-							return -1;
-						return 1;
-					}
-					if(aRecentIdx >= 0)
+					if(aRecentIdx >= 0 && bRecentIdx >= 0)
+						return aRecentIdx - bRecentIdx;
+					else if(aRecentIdx >= 0)
 						return -1;
-					if(bRecentIdx >= 0)
+					else if(bRecentIdx >= 0)
 						return 1;
 
-					log(`sort of ${a.title} vs ${b.title} with a/b idx of ${aRecentIdx}/${bRecentIdx} uncaught case`);
+					log(`sort of ${a.title} vs ${b.title} with a/b recent idx of ${aRecentIdx}/${bRecentIdx} uncaught case`);
 					return 0;
 				});
 		}

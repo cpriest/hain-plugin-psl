@@ -1,7 +1,7 @@
 'use strict';
 
 //noinspection JSUnusedLocalSymbols
-let { log, indent } = require('./utils.js');
+let { log, indent, ExpandEnvVars } = require('./utils.js');
 
 let Patterns = new Map();
 
@@ -24,7 +24,7 @@ module.exports = (pluginContext, PluginDir) => {
 
 			for(let x of this.ReplacableKeys) {
 				// Expand Environment Variables
-				this.def[x] = Pattern.ExpandEnvVars(this.def[x]);
+				this.def[x] = ExpandEnvVars(this.def[x]);
 
 				// Sanitize any remaining ${...} present
 				this.def[x] = this.def[x].replace(/\${(.+?)}/, '\\${$1}');
@@ -58,16 +58,6 @@ module.exports = (pluginContext, PluginDir) => {
 		 */
 		onExecute(match) {
 			this.RecentList.unshift(match.cmd);
-		}
-
-		/**
-		 * @param {string} cmd
-		 * @returns {string}
-		 */
-		static ExpandEnvVars(cmd) {
-			for(const name of Object.keys(process.env))
-				cmd = cmd.replace(`\$${name}}`, process.env[name]);
-			return cmd;
 		}
 	}
 

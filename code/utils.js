@@ -49,5 +49,15 @@ module.exports = class Util {
 		}
 		return matches;
 	}
+
+	/**
+	 * @param {string} cmd
+	 * @returns {string}
+	 */
+	static ExpandEnvVars(cmd) {
+		for(const name of Object.keys(process.env))
+			cmd = cmd.replace(`\$${name}}`, process.env[name]);
+		return cmd;
+	}
 };
 

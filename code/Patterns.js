@@ -7,7 +7,8 @@ let Patterns = new Map();
 
 module.exports = (pluginContext, PluginDir) => {
 	/** @type {ProvidersMap} */
-	let Providers = require('./providers/Providers.js')(pluginContext, PluginDir);
+	let Providers   = require('./providers/Providers.js')(pluginContext, PluginDir);
+	let RecentItems = require('./RecentItems.js')(pluginContext, PluginDir);
 
 	class Pattern {
 		/**
@@ -19,6 +20,7 @@ module.exports = (pluginContext, PluginDir) => {
 			this.id  = this.def.pattern;
 
 			this.ProviderNames  = [];
+			this.RecentList     = new RecentItems(this.id);
 			this.ReplacableKeys = ['cmd', 'title', 'desc', 'icon'];
 
 			for(let x of this.ReplacableKeys) {
@@ -92,6 +94,14 @@ module.exports = (pluginContext, PluginDir) => {
 					});
 			}
 			return [];
+		}
+
+		/**
+		 * Called when a given match is executed
+		 * @param {MatchDefinition} match
+		 */
+		onExecute(match) {
+			this.RecentList.unshift(match.cmd);
 		}
 
 		/**

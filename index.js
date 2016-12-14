@@ -35,7 +35,7 @@ module.exports = (pluginContext) => {
 					title  : match.title,
 					desc   : match.desc,
 					icon   : match.icon,
-//					payload: { pattern, cmd, title, desc, icon, re },
+					payload: { PatternID: objPattern.id, match },
 					group  : 'PSL'
 				});
 			}
@@ -49,6 +49,8 @@ module.exports = (pluginContext) => {
 	 * @param {*} payload
 	 */
 	function execute(cmd, payload) {
+		let objPattern = Patterns.get(payload.PatternID);
+		objPattern.onExecute(payload.match);
 		if(cmd.match(/^[\w\d]+:\/\//))
 			shell.openItem(cmd);
 		else

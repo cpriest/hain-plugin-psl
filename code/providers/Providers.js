@@ -42,6 +42,8 @@ module.exports = (pluginContext, PluginDir) => {
 		constructor(def) {
 			super(def);
 			this.Matchlist = new Map();
+
+			this.BuildMatchlist();
 		}
 
 		/**
@@ -62,6 +64,14 @@ module.exports = (pluginContext, PluginDir) => {
 				.map((match) =>
 					this.Matchlist.get(match)
 				);
+		}
+
+		/**
+		 * Called to build the matchlist
+		 * @returns {Map}
+		 */
+		BuildMatchlist() {
+			throw new Error("MatchlistProvider.BuildMatchlist() must be over-ridden.");
 		}
 	}
 	Providers.Provider          = Provider;

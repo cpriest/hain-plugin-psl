@@ -12,19 +12,9 @@ module.exports = (pluginContext, PluginDir) => {
 
 	class FilesetProvider extends Providers.MatchlistProvider {
 		/**
-		 * @constructor
-		 * @param {FilesetProviderDefinition} def
+		 * Builds the fileset according to the definition, called by parent class
 		 */
-		constructor(def) {
-			super(def);
-
-			this.BuildFileset();
-		}
-
-		/**
-		 * Builds the fileset according to the definition
-		 */
-		BuildFileset() {
+		BuildMatchlist() {
 			let Remaining = (this.def.glob || []).length;
 
 			for(let globPattern of this.def.glob || []) {

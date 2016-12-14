@@ -1,7 +1,7 @@
 # Features
 1. ~~Separate definition files~~
 2. ~~Move some FilesetProvider functionality into Provider base class or a new sub-class as commonalities reveal themselves~~
-3. Sort by recently used alphabetically, then the rest, alphabetically
+3. ~~Sort by recently used alphabetically, then the rest, alphabetically~~
 4. Automatic icon identification if unspecified
 5. auto-complete Providers
     1. Queryable - Google Suggest (w, w/o preview)

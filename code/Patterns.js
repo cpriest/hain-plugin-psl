@@ -91,6 +91,25 @@ module.exports = (pluginContext, PluginDir) => {
 							desc : (new Function('md', 'return `' + this.def.desc + '`;'))(md),
 							icon : (new Function('md', 'return `' + this.def.icon + '`;'))(md),
 						}
+					}).sort((a, b) => {
+						let aRecentIdx = this.RecentList.indexOf(a.cmd),
+							bRecentIdx = this.RecentList.indexOf(b.cmd);
+
+						if(aRecentIdx == bRecentIdx)
+							return a.title.localeCompare(b.title);
+
+						if(aRecentIdx >= 0 && bRecentIdx >= 0) {
+							if(aRecentIdx < bRecentIdx)
+								return -1;
+							return 1;
+						}
+						if(aRecentIdx >= 0)
+							return -1;
+						if(bRecentIdx >= 0)
+							return 1;
+
+						log(`sort of ${a.title} vs ${b.title} with a/b idx of ${aRecentIdx}/${bRecentIdx} uncaught case`);
+						return 0;
 					});
 			}
 			return [];

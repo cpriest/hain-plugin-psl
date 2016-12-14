@@ -35,7 +35,7 @@ module.exports = (pluginContext, PluginDir) => {
 	 */
 	function ParseDefinition(def) {
 		for(let pDef of def.patterns || []) {
-			let objPattern = new Patterns.Pattern(pDef);
+			let objPattern = Patterns.Create(pDef);
 			Patterns.set(objPattern.id, objPattern);
 		}
 

@@ -19,7 +19,6 @@ module.exports = (pluginContext, PluginDir) => {
 			this.def = def;
 			this.id  = this.def.pattern;
 
-			this.ProviderNames  = [];
 			this.RecentList     = new RecentItems(this.id);
 			this.ReplacableKeys = ['cmd', 'title', 'desc', 'icon'];
 
@@ -30,6 +29,56 @@ module.exports = (pluginContext, PluginDir) => {
 				// Sanitize any remaining ${...} present
 				this.def[x] = this.def[x].replace(/\${(.+?)}/, '\\${$1}');
 			}
+
+			this.pattern = this.def.pattern;
+
+			this.re = new RegExp(this.pattern, 'i');
+		}
+
+		/**
+		 * Checks the query for a match against this pattern
+		 * @param {string} query
+		 * @returns {MatchDefinition[]}
+		 */
+		matches(query) {
+			if(!this.re.test(query))
+				return [];
+
+			return [{
+				cmd  : query.replace(this.re, this.def.cmd),
+				title: query.replace(this.re, this.def.title),
+				desc : query.replace(this.re, this.def.desc),
+				icon : query.replace(this.re, this.def.icon),
+			}];
+		}
+
+		/**
+		 * Called when a given match is executed
+		 * @param {MatchDefinition} match
+		 */
+		onExecute(match) {
+			this.RecentList.unshift(match.cmd);
+		}
+
+		/**
+		 * @param {string} cmd
+		 * @returns {string}
+		 */
+		static ExpandEnvVars(cmd) {
+			for(const name of Object.keys(process.env))
+				cmd = cmd.replace(`\$${name}}`, process.env[name]);
+			return cmd;
+		}
+	}
+
+	class ProviderPattern extends Pattern {
+		/**
+		 * @constructor
+		 * @param {PatternDefinition} def
+		 */
+		constructor(def) {
+			super(def);
+			this.ProviderNames = [];
 
 			// Locate and replace any @providerNames with (.+)
 			this.pattern =
@@ -66,75 +115,70 @@ module.exports = (pluginContext, PluginDir) => {
 		 * @returns {MatchDefinition[]}
 		 */
 		matches(query) {
-			if(this.re.test(query)) {
-				if(this.ProviderNames.length == 0) {
-					return [{
-						cmd  : query.replace(this.re, this.def.cmd),
-						title: query.replace(this.re, this.def.title),
-						desc : query.replace(this.re, this.def.desc),
-						icon : query.replace(this.re, this.def.icon),
-					}];
-				}
+			if(!this.re.test(query))
+				return [];
 
-				let matches = this.re.exec(query);
-				let index   = 1, name = this.ProviderNames[0];
+			let matches = this.re.exec(query);
+			let index   = 1, name = this.ProviderNames[0];
 
-				/** @type {Provider} */
-				let objProvider = Providers.get(name);
+			/** @type {Provider} */
+			let objProvider = Providers.get(name);
 
-				return objProvider
-					.matches(matches[index])
-					.map((md) => {
-						return {
-							cmd  : (new Function('md', 'return `' + this.def.cmd + '`;'))(md),
-							title: (new Function('md', 'return `' + this.def.title + '`;'))(md),
-							desc : (new Function('md', 'return `' + this.def.desc + '`;'))(md),
-							icon : (new Function('md', 'return `' + this.def.icon + '`;'))(md),
-						}
-					}).sort((a, b) => {
-						let aRecentIdx = this.RecentList.indexOf(a.cmd),
-							bRecentIdx = this.RecentList.indexOf(b.cmd);
+			return objProvider
+				.matches(matches[index])
+				.map((md) => {
+					return {
+						cmd  : (new Function('md', 'return `' + this.def.cmd + '`;'))(md),
+						title: (new Function('md', 'return `' + this.def.title + '`;'))(md),
+						desc : (new Function('md', 'return `' + this.def.desc + '`;'))(md),
+						icon : (new Function('md', 'return `' + this.def.icon + '`;'))(md),
+					}
+				})
+				.sort((a, b) => {
+					let aRecentIdx = this.RecentList.indexOf(a.cmd),
+						bRecentIdx = this.RecentList.indexOf(b.cmd);
 
-						if(aRecentIdx == bRecentIdx)
-							return a.title.localeCompare(b.title);
+					if(aRecentIdx == bRecentIdx)
+						return a.title.localeCompare(b.title);
 
-						if(aRecentIdx >= 0 && bRecentIdx >= 0) {
-							if(aRecentIdx < bRecentIdx)
-								return -1;
-							return 1;
-						}
-						if(aRecentIdx >= 0)
+					if(aRecentIdx >= 0 && bRecentIdx >= 0) {
+						if(aRecentIdx < bRecentIdx)
 							return -1;
-						if(bRecentIdx >= 0)
-							return 1;
+						return 1;
+					}
+					if(aRecentIdx >= 0)
+						return -1;
+					if(bRecentIdx >= 0)
+						return 1;
 
-						log(`sort of ${a.title} vs ${b.title} with a/b idx of ${aRecentIdx}/${bRecentIdx} uncaught case`);
-						return 0;
-					});
-			}
-			return [];
+					log(`sort of ${a.title} vs ${b.title} with a/b idx of ${aRecentIdx}/${bRecentIdx} uncaught case`);
+					return 0;
+				});
 		}
 
-		/**
-		 * Called when a given match is executed
-		 * @param {MatchDefinition} match
-		 */
-		onExecute(match) {
-			this.RecentList.unshift(match.cmd);
-		}
 
 		/**
-		 * @param {string} cmd
-		 * @returns {string}
+		 * @param {PatternDefinition} def
 		 */
-		static ExpandEnvVars(cmd) {
-			for(const name of Object.keys(process.env))
-				cmd = cmd.replace(`\$${name}}`, process.env[name]);
-			return cmd;
+		static usesProviders(def) {
+			return /\(@(\w+?)\)/.test(def.pattern);
 		}
 	}
 
-	Patterns.Pattern = Pattern;
+	Patterns.Pattern         = Pattern;
+	Patterns.ProviderPattern = ProviderPattern;
+
+	/**
+	 * @constructor
+	 * @param {PatternDefinition} def
+	 */
+	function Create(def) {
+		if(ProviderPattern.usesProviders(def))
+			return new ProviderPattern(def);
+		return new Pattern(def);
+	}
+
+	Patterns.Create = Create;
 
 	return Patterns;
 };

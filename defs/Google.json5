@@ -1,0 +1,11 @@
+{
+	patterns: [
+		{
+			pattern: '^g (.+)$',
+			cmd:     'https://www.google.com/search?safe=off&site=&source=hp&q=$1',
+			title:   'Search Google for "$1"',
+			desc:    '',
+			icon:    'https://www.google.com/favicon.ico',
+		}
+	]
+}

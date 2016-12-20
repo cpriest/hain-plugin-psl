@@ -1,0 +1,11 @@
+{
+	patterns: [
+		{
+			pattern: '^z (.+)$',
+			cmd:     'https://smile.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=$1',
+			title:   'Search Amazon for "$1"',
+			desc:    '',
+			icon:    'http://smile.amazon.com/favicon.ico',
+		}
+	]
+}

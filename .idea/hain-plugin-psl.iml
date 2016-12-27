@@ -16,6 +16,6 @@
     </orderEntry>
     <orderEntry type="library" name="node-webkit-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="electron-DefinitelyTyped" level="application" />
-    <orderEntry type="module" module-name="hain" />
+    <orderEntry type="library" name="node-DefinitelyTyped" level="application" />
   </component>
 </module>

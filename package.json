@@ -1,20 +1,21 @@
 {
-  "name": "hain-plugin-psl",
-  "version": "0.0.1",
-  "keywords": [
-    "hain-0.5.0"
-  ],
-  "hain": {
-    "prefix": "",
-    "usage": "Setup shortcuts in preferences",
-    "icon": "#fa fa-bolt",
-    "redirect": "https://github.com/cpriest/hain-plugin-psl",
-    "group": ""
-  },
-  "dependencies": {
-    "glob": "7.1.x",
-    "json5": "0.5.x"
-  },
-  "devDependencies": {
-  }
+	"name":            "hain-plugin-psl",
+	"version":         "0.0.1",
+	"keywords":        [
+		"hain-0.5.0"
+	],
+	"hain":            {
+		"prefix":   "",
+		"usage":    "Setup shortcuts in preferences",
+		"icon":     "#fa fa-bolt",
+		"redirect": "https://github.com/cpriest/hain-plugin-psl",
+		"group":    ""
+	},
+	"dependencies":    {
+		"glob":             "7.1.x",
+		"debug":            "2.5",
+		"json5":            "0.5.x",
+		"github-api":       "2.3"
+	},
+	"devDependencies": {}
 }

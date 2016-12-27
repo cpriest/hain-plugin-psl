@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../hain/.idea/hain.iml" filepath="$PROJECT_DIR$/../hain/.idea/hain.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/hain-plugin-psl.iml" filepath="$PROJECT_DIR$/.idea/hain-plugin-psl.iml" />
     </modules>
   </component>

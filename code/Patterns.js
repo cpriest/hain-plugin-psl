@@ -80,23 +80,25 @@ module.exports = (pluginContext, PluginDir) => {
 						}
 					);
 
-			if(this.ProviderNames.size > 1)
-				log('WARNING: Providers do not currently support more than one provider per pattern, if you have a use case for this please submit a ticket.');
+			if(this.ProviderNames.length !== 1) {
+				if(this.ProviderNames.length === 0)
+					log('WARNING: No providers identified for pattern %s, provider names look like this: @sshFiles', this.def.pattern);
+				else if(this.ProviderNames.length > 1)
+					log('WARNING: Providers currently support a single provider per pattern, if you have a use case for more than one provider please let me know.');
+				return;
+			}
 
 			this.re = new RegExp(this.pattern, 'i');
 
-			setTimeout(() => {
-				if(this.ProviderNames.length) {
-					let name        = this.ProviderNames[0],
-						objProvider = Providers.get(name);
-					if(!objProvider)
-						throw new Error(`Unable to locate provider named @${name} specified in pattern: ${this.def.pattern}`);
+			Providers.get(this.ProviderNames[0])
+				.then((objProvider) => {
+					/** @type {Provider} */
+					this.objProvider = objProvider;
 
 					let re = new RegExp('\{(' + objProvider.Replacables.join('|') + ')\}');
 					for(let x of this.ReplacableKeys)
 						this.def[x] = this.def[x].replace(re, '\${md.$1}');
-				}
-			}, 500);
+				});
 		}
 
 		/**
@@ -105,16 +107,13 @@ module.exports = (pluginContext, PluginDir) => {
 		 * @returns {MatchDefinition[]}
 		 */
 		matches(query) {
-			if(!this.re.test(query))
+			if(!this.objProvider || !this.re.test(query))
 				return [];
 
 			let matches = this.re.exec(query);
-			let index   = 1, name = this.ProviderNames[0];
+			let index   = 1;
 
-			/** @type {Provider} */
-			let objProvider = Providers.get(name);
-
-			return objProvider
+			return this.objProvider
 				.matches(matches[index])
 				.map((md) => {
 					return {
@@ -128,7 +127,7 @@ module.exports = (pluginContext, PluginDir) => {
 					let aRecentIdx = this.RecentList.indexOf(a.cmd),
 						bRecentIdx = this.RecentList.indexOf(b.cmd);
 
-					if(aRecentIdx == bRecentIdx)
+					if(aRecentIdx === bRecentIdx)
 						return a.title.localeCompare(b.title);
 
 					if(aRecentIdx >= 0 && bRecentIdx >= 0)

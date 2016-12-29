@@ -9,9 +9,8 @@
     3. Queryable - API (JIRA)
     4. ~~Filesystem - Directory / Pattern Matching~~
 6. ~~Negative Search Filter (dep -chi)~~
-
-
-7. My own binding to execute /quit (for dev)
+7. Provide pre-match completion hint for patterns
+8. My own binding to execute /quit (for dev)
 
 
 
@@ -26,7 +25,7 @@
 5. Switch to import * from * rather than require?
 6. ~~Have MatchlistProvider call this.BuildMatchlist() from it's own constructor, then FilesetProvider won't need it's own constructor just for that.~~
 7. Better .id for Patterns than the pattern (possibly cleaned up pattern)...
-8. Better way of handling setTimeout() code in ProviderPattern (via event emission)
+8. ~~Better way of handling setTimeout() code in ProviderPattern (via event emission)~~
 
 
 # Ideas

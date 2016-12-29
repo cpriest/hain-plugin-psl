@@ -42,7 +42,7 @@ module.exports = (pluginContext, PluginDir) => {
 							});
 						});
 				}).on('end', (matches) => {
-					if(--Remaining == 0) {
+					if(--Remaining === 0) {
 						log(`Found ${this.Matchlist.size} files for @${this.def.name}`);
 
 						if(this.Matchlist.size > 0) {
@@ -51,6 +51,7 @@ module.exports = (pluginContext, PluginDir) => {
 									.next().value
 							);
 						}
+						this.IndexingCompleted();
 					}
 				});
 			}

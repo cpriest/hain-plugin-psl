@@ -3,7 +3,33 @@
 //noinspection JSUnusedLocalSymbols
 let { log, indent, reQuery } = require('../utils.js');
 
-let Providers = new Map();
+class ProvidersMap extends Map {
+	constructor(i) {
+		super(i);
+		this.Resolvers = new Map();
+	}
+	get(key) {
+		if(this.has(key))
+			return super.get(key);
+
+		let p = new Promise((resolve, reject) => {
+			this.Resolvers.set(key, resolve);
+		});
+		super.set(key, p);
+
+		return p;
+	}
+
+	/**
+	 * Resolves the promise return by get()
+	 * @param {Provider} objProvider
+	 */
+	ResolvePromise(objProvider) {
+		this.Resolvers.get(objProvider.id)(objProvider);
+	}
+}
+
+let Providers = new ProvidersMap();
 
 module.exports = (pluginContext, PluginDir) => {
 
@@ -25,6 +51,14 @@ module.exports = (pluginContext, PluginDir) => {
 		 */
 		matches(query) {
 			throw new Error("Provider.matches() must be over-ridden.");
+		}
+
+		/**
+		 * Called by the Provider when the dataset has been prepared/collected and is ready for matching
+		 * 	This fulfills the promise created by the {ProvidersMap} class
+		 */
+		IndexingCompleted() {
+			Providers.ResolvePromise(this);
 		}
 	}
 
@@ -51,6 +85,7 @@ module.exports = (pluginContext, PluginDir) => {
 		 * @returns {MatchDefinition[]}
 		 */
 		matches(query) {
+			/** @type {string[]} */
 			let matches = reQuery(query, Array.from(this.Matchlist.keys()));
 
 			let MaxMatches = (this.def.options && this.def.options.MaxMatches) || Providers.DefaultMaxMatches;

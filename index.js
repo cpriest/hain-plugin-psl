@@ -8,8 +8,8 @@ module.exports = (pluginContext) => {
 	//noinspection JSUnusedLocalSymbols
 	const app    = pluginContext.app;
 	//noinspection JSUnusedLocalSymbols
-	const logger = pluginContext.logger;
-//	const prefs  = pluginContext.preferences.get();
+	// const logger = pluginContext.logger;
+	// const prefs  = pluginContext.preferences.get();
 	const shell  = pluginContext.shell;
 
 	/** @type PatternsMap */
@@ -35,7 +35,8 @@ module.exports = (pluginContext) => {
 					desc   : match.desc,
 					icon   : match.icon,
 					payload: { PatternID: objPattern.id, match },
-					group  : 'PSL'
+					group  : 'PSL',
+					score: .6,
 				});
 			}
 		}

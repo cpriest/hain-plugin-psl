@@ -4,9 +4,9 @@
 
 //noinspection JSUnusedLocalSymbols
 let { log, indent } = require('../utils');
-let dbg = require('debug')('psl:github');
-dbg.inc = require('debug')('psl:github:included');
-dbg.exc = require('debug')('psl:github:excluded');
+let dbg             = require('debug')('psl:github');
+dbg.inc             = require('debug')('psl:github:included');
+dbg.exc             = require('debug')('psl:github:excluded');
 
 
 //noinspection JSUnusedLocalSymbols
@@ -19,8 +19,7 @@ module.exports = (pluginContext, PluginDir) => {
 		 * Builds the matchlist according to what's queryable by the Github API
 		 */
 		BuildMatchlist() {
-
-			let API = new GitHubApi(this.def.auth);
+			let API      = new GitHubApi(this.def.auth);
 			let included = new Map(),
 				excluded = new Map();
 
@@ -38,12 +37,22 @@ module.exports = (pluginContext, PluginDir) => {
 									include = true;
 							}
 						}
-						(include ? included : excluded).set(repo.full_name, repo);
+						(include
+							? included
+							: excluded).set(repo.full_name, repo);
 					}
-					dbg.inc.enabled &&
-						dbg.inc('\n%s', indent(Array.from(included.keys()).sort().join('\n')));
-					dbg.exc.enabled &&
-						dbg.exc('\n%s', indent(Array.from(excluded.keys()).sort().join('\n')));
+					if(dbg.inc.enabled) {
+						dbg.inc('\n%s', indent(
+							Array.from(included.keys())
+								.sort()
+								.join('\n')));
+					}
+					if(dbg.exc.enabled) {
+						dbg.exc('\n%s', indent(
+							Array.from(excluded.keys())
+								.sort()
+								.join('\n')));
+					}
 
 					this.Matchlist = included;
 					log(`Included ${included.size}/${res.data.length} GitHub repositories @${this.def.name}`);
@@ -54,6 +63,7 @@ module.exports = (pluginContext, PluginDir) => {
 								.next().value
 						);
 					}
+					this.IndexingCompleted();
 				});
 		}
 

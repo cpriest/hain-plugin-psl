@@ -45,12 +45,6 @@ module.exports = (pluginContext, PluginDir) => {
 					if(--Remaining === 0) {
 						log(`Found ${this.Matchlist.size} files for @${this.def.name}`);
 
-						if(this.Matchlist.size > 0) {
-							this.Replacables = Object.keys(
-								this.Matchlist.values()
-									.next().value
-							);
-						}
 						this.IndexingCompleted();
 					}
 				});

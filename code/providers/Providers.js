@@ -101,6 +101,18 @@ module.exports = (pluginContext, PluginDir) => {
 				);
 		}
 
+
+		IndexingCompleted() {
+			if(this.Matchlist.size > 0 && this.Replacables.length === 0) {
+				this.Replacables = Object.keys(
+					this.Matchlist.values()
+						.next().value
+				);
+			}
+
+			return super.IndexingCompleted();
+		}
+
 		/**
 		 * Called to build the matchlist
 		 * @returns {Map}

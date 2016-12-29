@@ -57,12 +57,6 @@ module.exports = (pluginContext, PluginDir) => {
 					this.Matchlist = included;
 					log(`Included ${included.size}/${res.data.length} GitHub repositories @${this.def.name}`);
 
-					if(this.Matchlist.size > 0) {
-						this.Replacables = Object.keys(
-							this.Matchlist.values()
-								.next().value
-						);
-					}
 					this.IndexingCompleted();
 				});
 		}

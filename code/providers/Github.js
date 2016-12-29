@@ -1,12 +1,7 @@
 'use strict';
 
-// process.env.DEBUG='psl:github*';
-
 //noinspection JSUnusedLocalSymbols
 let { log, indent } = require('../utils');
-let dbg             = require('debug')('psl:github');
-dbg.inc             = require('debug')('psl:github:included');
-dbg.exc             = require('debug')('psl:github:excluded');
 
 
 //noinspection JSUnusedLocalSymbols
@@ -41,14 +36,14 @@ module.exports = (pluginContext, PluginDir) => {
 							? included
 							: excluded).set(repo.full_name, repo);
 					}
-					if(dbg.inc.enabled) {
-						dbg.inc('\n%s', indent(
+					if(this.def.log.included) {
+						log('Included Repositories:\n%s', indent(
 							Array.from(included.keys())
 								.sort()
 								.join('\n')));
 					}
-					if(dbg.exc.enabled) {
-						dbg.exc('\n%s', indent(
+					if(this.def.log.excluded) {
+						log('Excluded Repositories:\n%s', indent(
 							Array.from(excluded.keys())
 								.sort()
 								.join('\n')));
@@ -67,12 +62,11 @@ module.exports = (pluginContext, PluginDir) => {
 		 * @param {Repository} repo
 		 */
 		RuleMatches(rule, repo) {
-			let regexMap = {
-				name: 'full_name',
-			};
+			let regexKeys = [ 'name', 'full_name'];
+
 			for(let key of Object.keys(rule)) {
-				if(key in regexMap) {
-					if(!(new RegExp(rule[key], 'i')).test(repo[regexMap[key]]))
+				if(regexKeys.indexOf(key) !== -1) {
+					if(!(new RegExp(rule[key], 'i')).test(repo[key]))
 						return false;
 				} else {
 					if(repo[key] !== rule[key])

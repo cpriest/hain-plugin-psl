@@ -10,9 +10,10 @@
 //noinspection JSUnusedLocalSymbols
 module.exports = class Util {
 	static log(...args) {
-		args.unshift('PSL: ');
+		let ret = args[0];
+		args[0] = 'PSL: ' + args[0];
 		console.log(...args);
-		return args[1];
+		return ret;
 	}
 
 	static indent(msg, level=1) {
@@ -31,8 +32,8 @@ module.exports = class Util {
 	 */
 	static reQuery(query, matches) {
 		for(let part of query.split(/\s+/i)) {
-			if(part.substr(0, 1) == '-') {
-				if(part.length == 1)
+			if(part.substr(0, 1) === '-') {
+				if(part.length === 1)
 					continue;
 
 				let re = new RegExp(part.substr(1), 'i');

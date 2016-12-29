@@ -6,8 +6,11 @@
 5. auto-complete Providers
     1. Queryable - Google Suggest (w, w/o preview)
     2. Queryable - API (Github)
-    3. Queryable - API (JIRA)
-    4. ~~Filesystem - Directory / Pattern Matching~~
+        1. ~~Repositories~~
+        2. Pull Requests
+        3. Issues
+    4. Queryable - API (JIRA)
+    5. ~~Filesystem - Directory / Pattern Matching~~
 6. ~~Negative Search Filter (dep -chi)~~
 7. Provide pre-match completion hint for patterns
 8. My own binding to execute /quit (for dev)

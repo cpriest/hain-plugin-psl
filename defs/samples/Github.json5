@@ -21,7 +21,7 @@
 
 			auth: {
 				username: 	'your_username',
-				token:		'your_personal_token',		// @see https://github.com/settings/tokens
+				password:	'your_personal_token',		// @see https://github.com/settings/tokens
 			},
 			rules: [
 

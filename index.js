@@ -12,6 +12,8 @@ module.exports = (pluginContext) => {
 	// const prefs  = pluginContext.preferences.get();
 	const shell  = pluginContext.shell;
 
+	console.log = pluginContext.logger.log;
+
 	/** @type PatternsMap */
 	let Patterns = require('./code/Patterns.js')(pluginContext, __dirname);
 

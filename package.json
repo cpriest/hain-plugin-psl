@@ -15,7 +15,7 @@
 		"glob":             "7.1.x",
 		"debug":            "2.5",
 		"json5":            "0.5.x",
-		"github-api":       "2.3"
+		"request":			"2.79"
 	},
 	"devDependencies": {}
 }

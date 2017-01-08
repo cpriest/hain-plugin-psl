@@ -12,10 +12,11 @@
 		"group":    ""
 	},
 	"dependencies":    {
-		"glob":             "7.1.x",
-		"debug":            "2.5",
-		"json5":            "0.5.x",
-		"request":			"2.79"
+		"glob":    "7.1.x",
+		"debug":   "2.5",
+		"json5":   "0.5.x",
+		"request": "2.79",
+		"vm2":     "^3.1.0"
 	},
 	"devDependencies": {}
 }

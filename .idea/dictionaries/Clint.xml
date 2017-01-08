@@ -6,6 +6,9 @@
       <w>matchlist</w>
       <w>queryable</w>
       <w>replacables</w>
+      <w>sandboxed</w>
+      <w>scaylr</w>
+      <w>transpiling</w>
       <w>yagni</w>
     </words>
   </dictionary>

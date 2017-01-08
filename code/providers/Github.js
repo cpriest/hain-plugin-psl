@@ -1,7 +1,9 @@
 'use strict';
 
 //noinspection JSUnusedLocalSymbols
-let { log, indent } = require('../utils');
+const { indent } = require('../utils');
+const qs         = require('querystring');
+const { VM }     = require('vm2');
 
 class Github {
 	constructor(auth) {
@@ -21,7 +23,7 @@ class Github {
 	get(query) {
 		return new Promise((resolve, reject) => {
 			let results = [];
-			let queued = 0;
+			let queued  = 0;
 
 			let _get = (query) => {
 				if(query.substr(0, 1) === '/')
@@ -30,7 +32,7 @@ class Github {
 				queued++;
 				this.req(query, (err, res, body) => {
 					if(!err && res.statusCode === 200) {
-						results = results.concat(body);
+						results = results.concat(body.items || body);
 
 						(res.headers.link || '')
 							.split(/,\s*/)
@@ -63,69 +65,113 @@ module.exports = (pluginContext, PluginDir) => {
 		 */
 		BuildMatchlist() {
 			let API = new Github(this.def.auth);
-			let included = new Map(),
-				excluded = new Map();
 
-			API.get('/user/repos?per_page=100')
-				.then((results) => {
-					for(let repo of results) {
-						let include = true;
-						for(let rule of this.def.rules) {
-							if(rule.exclude) {
-								if(this.RuleMatches(rule.exclude, repo))
-									include = false;
-							} else if(rule.include) {
-								if(this.RuleMatches(rule.include, repo))
-									include = true;
-							}
-						}
-						(include
-							? included
-							: excluded).set(repo.full_name, repo);
+			this.ResolveQueries(API);
+		}
+
+		ResolveQueries(API) {
+			let AllResults = [];
+			let resolved   = 0;
+
+			let QueryResolved = () => {
+				resolved++;
+				if(resolved === this.def.queries.length) {
+					let NamedResults = new Map();
+
+					for(let item of AllResults) {
+						let title = (new VM({
+							timeout: 25,
+							sandbox: item,
+						})).run('`' + this.def.title + '`;');
+
+						item.prov = { title };
+
+						NamedResults.set(title, item);
 					}
-					if(this.def.log.included) {
-						console.log('Included Repositories:\n%s', indent(
-							Array.from(included.keys())
-								.sort()
-								.join('\n')));
+					if(this.def.log && this.def.log.results && AllResults.length > 0)
+						log(AllResults);
+
+					let [included, excluded] = this.FilterResultsWithRules(NamedResults, this.def.rules || new Map());
+
+					if(this.def.log && this.def.log.included) {
+						log(`Included Results (${this.def.name}):\n${indent(Array.from(included.keys())
+							.sort()
+							.join('\n'))}`);
 					}
-					if(this.def.log.excluded) {
-						console.log('Excluded Repositories:\n%s', indent(
-							Array.from(excluded.keys())
-								.sort()
-								.join('\n')));
+					if(this.def.log && this.def.log.excluded) {
+						log(`Excluded Results (${this.def.name}):\n${indent(Array.from(excluded.keys())
+							.sort()
+							.join('\n'))}`);
 					}
 
 					this.Matchlist = included;
-					console.log(`Included ${included.size}/${results.length} GitHub repositories @${this.def.name}`);
+					log(`Included ${included.size}/${NamedResults.size} GitHub items for @${this.def.name}`);
 
 					this.IndexingCompleted();
-				})
-				.catch((err) => {
-					pluginContext.toast.enqueue('Failed to fetch from Github, see debug log.');
-					console.log(err);
-				});
-		}
-		/**
-		 * Returns true if the given rule matches the repo
-		 * @param {object} rule
-		 * @param {object} repo
-		 */
-		RuleMatches(rule, repo) {
-			let regexKeys = ['name', 'full_name'];
+				}
+			};
 
+			for(let query of this.def.queries) {
+				API.get(`${this.def.uri}?per_page=100&q=` + qs.escape(query))
+					.then((results) => {
+						AllResults = AllResults.concat([...results]);
+						QueryResolved();
+					})
+					.catch((err) => {
+						pluginContext.toast.enqueue('Failed to fetch results from Github, see debug log.');
+						if(err instanceof Error) {
+							log(err.stack);
+						} else {
+							log(err);
+							QueryResolved();
+						}
+					});
+			}
+		}
+
+		FilterResultsWithRules(NamedResults, rules) {
+			let included = new Map(),
+				excluded = new Map();
+
+			if(rules.size === 0)
+				return [NamedResults, excluded];
+
+			for(let [title, item] of NamedResults) {
+				let include = true;
+
+				for(let rule of rules) {
+					if(rule.exclude) {
+						if(this.RuleMatches(rule.exclude, item))
+							include = false;
+					} else if(rule.include) {
+						if(this.RuleMatches(rule.include, item))
+							include = true;
+					}
+				}
+				(include
+					? included
+					: excluded).set(title, item);
+			}
+			return [included, excluded];
+		}
+
+		/**
+		 * Returns true if the given rule matches the item
+		 * @param {object} rule
+		 * @param {object} item
+		 */
+		RuleMatches(rule, item) {
 			for(let key of Object.keys(rule)) {
-				if(regexKeys.indexOf(key) !== -1) {
-					if(!(new RegExp(rule[key], 'i')).test(repo[key]))
+				if(typeof item[key] === 'string') {
+					if(!(new RegExp(rule[key], 'i')).test(item[key]))
 						return false;
 				} else {
-					if(repo[key] !== rule[key])
+					if(item[key] !== rule[key])
 						return false;
 				}
 			}
 			return true;
 		}
-
 	}
 	return GithubProvider;
 };

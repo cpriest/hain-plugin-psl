@@ -6,6 +6,12 @@
 // 	func  : console.log,
 // });
 
+// Quick Shim rather than get transpiling setup yet (Object.entries is not in Node 6.5 yet, but is in Node 7)
+Object.entries =
+	typeof Object.entries === 'function'
+		? Object.entries
+		: obj => Object.keys(obj)
+			.map(k => [k, obj[k]]);
 
 //noinspection JSUnusedLocalSymbols
 module.exports = class Util {

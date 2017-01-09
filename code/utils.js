@@ -1,5 +1,7 @@
 'use strict';
 
+const { escape } = require('querystring');
+
 // const logger = require('oh-my-log/lib/node6');
 // let log = logger('PSL', {
 // 	prefix: '%__date:green [%__name:blue:bold]:',
@@ -58,6 +60,33 @@ module.exports = class Util {
 		for(const name of Object.keys(process.env))
 			cmd = cmd.replace(`\$${name}}`, process.env[name]);
 		return cmd;
+	}
+
+	/**
+	 * This calls querystring.escape() on all parameters where {this} is a string
+	 * 	and matches a URN pattern
+	 *
+	 * @param {string} match			The entire string that matched
+	 * @param {string} matches			The sub-matches & , offset, string)
+	 * @returns {string}				The replacement string to be used
+	 */
+	static EscapeMatchesForURNs(match, ...matches) {
+		//noinspection JSUnusedLocalSymbols
+		let string = matches.pop(),
+			offset = matches.pop();
+
+		//noinspection JSValidateTypes
+		/** @var {string} */
+		let result = this;
+
+		// For URN resources only
+		if(/^\w+:\/\//.test(result)) {
+			matches = matches.map(escape);
+			for(let i = 0; i < matches.length; i++)
+				result = result.replace(`\$${i + 1}`, matches[i])
+		}
+
+		return result;
 	}
 };
 

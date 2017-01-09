@@ -1,7 +1,7 @@
 {
 	patterns: [
 		{
-			pattern: '^gm (.+)$',
+			pattern: '^gm (.*)$',
 			cmd:     'https://www.google.com/maps/search/$1',
 			title:   'Search Google Maps for "$1"',
 			desc:    '',

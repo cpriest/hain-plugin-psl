@@ -1,7 +1,7 @@
 'use strict';
 
 //noinspection JSUnusedLocalSymbols
-let { indent, ExpandEnvVars } = require('./utils.js');
+let { indent, ExpandEnvVars, EscapeMatchesForURNs } = require('./utils.js');
 const { VM }     = require('vm2');
 
 let Patterns = new Map();
@@ -46,7 +46,7 @@ module.exports = (pluginContext, PluginDir) => {
 				return [];
 
 			return [{
-				cmd  : query.replace(this.re, this.def.cmd),
+				cmd  : query.replace(this.re, EscapeMatchesForURNs.bind(this.def.cmd)),
 				title: query.replace(this.re, this.def.title),
 				desc : query.replace(this.re, this.def.desc),
 				icon : query.replace(this.re, this.def.icon),

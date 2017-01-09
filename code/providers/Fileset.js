@@ -4,7 +4,7 @@ const path = require("path");
 const Glob = require("glob").Glob;
 
 //noinspection JSUnusedLocalSymbols
-let { log, indent } = require('../utils');
+let { indent } = require('../utils');
 
 //noinspection JSUnusedLocalSymbols
 module.exports = (pluginContext, PluginDir) => {

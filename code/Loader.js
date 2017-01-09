@@ -4,7 +4,7 @@ require('json5/lib/require');
 const Glob = require("glob").Glob;
 
 //noinspection JSUnusedLocalSymbols
-let { log, indent } = require('./utils.js');
+let { indent } = require('./utils.js');
 
 module.exports = (pluginContext, PluginDir) => {
 	/** @type ProvidersMap */

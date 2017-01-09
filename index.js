@@ -1,7 +1,7 @@
 'use strict';
 
 //noinspection JSUnusedLocalSymbols
-let { log } = require('./code/utils.js');
+let { indent } = require('./code/utils.js');
 const exec = require('child_process').exec;
 
 module.exports = (pluginContext) => {

@@ -1,7 +1,7 @@
 'use strict';
 
 //noinspection JSUnusedLocalSymbols
-let { log, indent, reQuery } = require('../utils.js');
+let { indent, reQuery } = require('../utils.js');
 
 class ProvidersMap extends Map {
 	constructor(i) {

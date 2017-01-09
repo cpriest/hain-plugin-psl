@@ -15,13 +15,6 @@ Object.entries =
 
 //noinspection JSUnusedLocalSymbols
 module.exports = class Util {
-	static log(...args) {
-		let ret = args[0];
-		args[0] = 'PSL: ' + args[0];
-		console.log(...args);
-		return ret;
-	}
-
 	static indent(msg, level=1) {
 		let prefix = "    ".repeat(level);
 		return msg.replace(/^(.+)$/mg, prefix+'$1');

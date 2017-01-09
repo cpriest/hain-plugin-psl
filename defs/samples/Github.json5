@@ -1,50 +1,107 @@
 {
 
-	// All object properties provided by a result are available for use in the pattern parameters
-	//	- For Repositories, see https://developer.github.com/v3/repos/#response
-
+	// All object properties provided by a resultset are available for use in the pattern parameters
+	//	The {title} parameter of a github provider is saved to each item in the resultset as {prov.title}
 	patterns:  [
 		{
-			pattern: '^gh (@github)',
-			cmd:     '{html_url}',
-			title:   'Open {full_name} : Github',
-			desc:    '{description}',
-			icon:    '',
+			pattern: '^gh (@gh_repos)',
+			cmd:     '${html_url}',
+			title:	 '${prov.title}', 	// {prov.title} maps to provider -> {title}
+			desc:    '${description}',
+			icon:    '#fa fa-github',
+		},
+		{
+			pattern: '(@gh_issues)',
+			cmd:     '${url}',
+			title:   '${prov.title}',  // {prov.title} maps to provider -> {title}
+			desc:    '',
+			icon:    '#fa fa-github',
 		}
 	],
 	providers: {
-		github: {
+		gh_repos: {
 			type:    'Github',
+
+			// This specifies the Github search URI to be used for this result set
+			// 		@see https://developer.github.com/v3/search/#search-repositories
+			uri:   '/search/repositories',
+
+			// Title is the name that each entry of this provider result set will match against the search input
+			// 		This value is processed as a Template Literal in a sandbox, each item is accessible as a locally
+			//		defined variable, the key names depend on the query {uri} being used.
+			title: '${full_name} : GitHub Repository',
 
 			// You must put your username and a Personal Access Token in auth to query github.  At present this provider will authenticate with your provided credentials and
 			//	query for all repositories public/private that you can access
-
 			auth: {
 				username: 	'your_username',
 				password:	'your_personal_token',		// @see https://github.com/settings/tokens
 			},
+
+			// The below strings will be passed as the q parameter to the {uri} above, called individually and merged together
+			//	before having the rules applied to them
+			queries: [
+				'user:cpriest user:resgen'
+			],
+			// Rules take the following form, any properties within the exclude/include must match the repository property
+			//	provided back by GitHub (@see: https://developer.github.com/v3/repos/#response)
+			//	- Entries are included by default unless excluded
+			//	- All rules are run for each repository, the final include/exclude state is taken
+			//	- Sub-object parameter matching may work if object comparison is equal, untested but unlikely
+			//
+			//	Some properties may be matched with a regular expression pattern, currently name, full_name are enabled for this
 			rules: [
-
-				// Rules take the following form, any properties within the exclude/include must match the repository property
-				//	provided back by GitHub (@see: https://developer.github.com/v3/repos/#response)
-				//	- Entries are included by default unless excluded
-				//	- All rules are run for each repository, the final include/exclude state is taken
-				//	- Sub-object parameter matching may work if object comparison is equal, untested but unlikely
-				//
-				//	Some properties may be matched with a regular expression pattern, currently name, full_name are enabled for this
-
-				{ exclude: { fork: true } },
+				{ exclude: { fork: true } },				// Not Strictly necessary as the {query} filters for forks, left here as an example
 				{ exclude: { full_name: 'example/' } },
 				{ exclude: { full_name: 'cpriest/(msys-setup|multitail-.+|tools-pwhois)' } },
 				{ include: { full_name: 'example/(sub1|sub2|sub3)$' } },
 			],
 			options: {
-//				MaxMatches:	10,
+				// MaxMatches:	10,			// Limit the maximum matches for any search of this provider (DEFAULT: 10)
+				refresh: 60, 				// Refresh the resultset every {refresh} minutes (NOT YET IMPLEMENTED)
 			},
 			log: {
-				included: false,	// If true, will log to stdout repositories included in the resultset
-				excluded: false,	// If true, will log to stdout repositories excluded from the resultset
+				// included:	true,		// Log to stdout the included results (for setup/debugging)
+				// excluded:	true,		// Log to stdout the excluded results (for setup/debugging)
+				// results:		true,		// Log to stdout the entire result set (for setup/debugging)
 			},
+		},
+		gh_issues: {
+			type:    'Github',
+			// This specifies the Github search URI to be used for this result set
+			// 		@see https://developer.github.com/v3/search/#search-repositories
+			uri:     '/search/issues',
+
+			// Title is the name that each entry of this provider result set will match against the search input
+			// 		This value is processed as a Template Literal in a sandbox, each item is accessible as a locally
+			//		defined variable, the key names depend on the query {uri} being used.
+			title: '${title} : ${repository_url.split("/").slice(-1).join("/")}#${number} : GitHub Issue',
+
+			// You must put your username and a Personal Access Token in auth to query github.  At present this provider will authenticate with your provided credentials and
+			//	query for all repositories public/private that you can access
+			auth: {
+				username: 	'your_username',
+				password:	'your_personal_token',		// @see https://github.com/settings/tokens
+			},
+
+			// The below strings will be passed as the q parameter to the {uri} above, called individually and merged together
+			//	before having the rules applied to them
+			queries: [
+				'is:open type:issue user:cpriest user:resgen',
+			],
+
+			// Look Mom, No Rules
+
+			options: {
+				// MaxMatches:	10,			// Limit the maximum matches for any search of this provider (DEFAULT: 10)
+				refresh: 60, 				// Refresh the resultset every {refresh} minutes (NOT YET IMPLEMENTED)
+			},
+			log: {
+				// included:	true,		// Log to stdout the included results (for setup/debugging)
+				// excluded:	true,		// Log to stdout the excluded results (for setup/debugging)
+				// results:		true,		// Log to stdout the entire result set (for setup/debugging)
+			}
 		}
+
 	}
 }

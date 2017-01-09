@@ -1,7 +1,8 @@
 'use strict';
 
 //noinspection JSUnusedLocalSymbols
-let { log, indent, ExpandEnvVars } = require('./utils.js');
+let { indent, ExpandEnvVars } = require('./utils.js');
+const { VM }     = require('vm2');
 
 let Patterns = new Map();
 
@@ -27,7 +28,7 @@ module.exports = (pluginContext, PluginDir) => {
 				this.def[x] = ExpandEnvVars(this.def[x]);
 
 				// Sanitize any remaining ${...} present
-				this.def[x] = this.def[x].replace(/\${(.+?)}/, '\\${$1}');
+//				this.def[x] = this.def[x].replace(/\${(.+?)}/, '\\${$1}');
 			}
 
 			this.pattern = this.def.pattern;
@@ -95,9 +96,9 @@ module.exports = (pluginContext, PluginDir) => {
 					/** @type {Provider} */
 					this.objProvider = objProvider;
 
-					let re = new RegExp('\{(' + objProvider.Replacables.join('|') + ')\}');
-					for(let x of this.ReplacableKeys)
-						this.def[x] = this.def[x].replace(re, '\${md.$1}');
+					// let re = new RegExp('\{(' + objProvider.Replacables.join('|') + ')\}');
+					// for(let x of this.ReplacableKeys)
+					// 	this.def[x] = this.def[x].replace(re, '\${md.$1}');
 				});
 		}
 
@@ -116,12 +117,22 @@ module.exports = (pluginContext, PluginDir) => {
 			return this.objProvider
 				.matches(matches[index])
 				.map((md) => {
+					let result = (new VM({
+						timeout: 25,
+						sandbox: md,
+					})).run('[\n' +
+							'`' + this.def.cmd + '`,\n' +
+							'`' + this.def.title + '`,\n' +
+							'`' + this.def.desc + '`,\n' +
+							'`' + this.def.icon + '`,\n' +
+							']');
+
 					return {
-						cmd  : (new Function('md', 'return `' + this.def.cmd + '`;'))(md),
-						title: (new Function('md', 'return `' + this.def.title + '`;'))(md),
-						desc : (new Function('md', 'return `' + this.def.desc + '`;'))(md),
-						icon : (new Function('md', 'return `' + this.def.icon + '`;'))(md),
-					}
+						cmd  : result[0],
+						title: result[1],
+						desc : result[2],
+						icon : result[3],
+					};
 				})
 				.sort((a, b) => {
 					let aRecentIdx = this.RecentList.indexOf(a.cmd),

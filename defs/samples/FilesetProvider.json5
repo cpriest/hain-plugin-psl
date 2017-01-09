@@ -2,8 +2,8 @@
 	patterns:  [
 		{
 			pattern: '^ssh (@sshFiles)',
-			cmd:     'SecureCRT.exe /T /S {title}',
-			title:   'Open SSH Session to {title}',
+			cmd:     'SecureCRT.exe /T /S ${title}',
+			title:   'Open SSH Session to ${title}',
 			desc:    '',
 			icon:    '',
 		}

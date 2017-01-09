@@ -13,7 +13,7 @@
     4. Queryable - API (JIRA)
     5. ~~Filesystem - Directory / Pattern Matching~~
  7. ~~Negative Search Filter (dep -chi)~~
- 8. **Extend pattern parameter substitution to full sandboxed template literal capability**
+ 8. ~~Extend pattern parameter substitution to full sandboxed template literal capability~~
  9. More generic setup for github providers, allowing for specification of API endpoint definitions
     (this essentially moves the github specific code into a definition file)
 10. Provide pre-match completion hint for patterns
@@ -28,14 +28,15 @@
 
 
 # Refactoring
- 1. ~~Separate out Pattern vs Patterns w/ Providers into different classes (Provider Patterns have much more code)~~
- 2. ~~Perhaps move PCRE Matching of {string[]} to a utility function~~
- 5. More elegant solution to recent items list sorting, seems clunky as-is (refactored once...) ??
- 6. ~~Move ExpandVars into Utils~~
- 7. Switch to import * from * rather than require?
- 8. ~~Have MatchlistProvider call this.BuildMatchlist() from it's own constructor, then FilesetProvider won't need it's own constructor just for that.~~
- 9. Better .id for Patterns than the pattern (possibly cleaned up pattern)...
-10. ~~Better way of handling setTimeout() code in ProviderPattern (via event emission)~~
+1. ~~Separate out Pattern vs Patterns w/ Providers into different classes (Provider Patterns have much more code)~~
+2. ~~Perhaps move PCRE Matching of {string[]} to a utility function~~
+3. Notion of 'Replacables' no longer valid since sandboxing?
+4. More elegant solution to recent items list sorting, seems clunky as-is (refactored once...) ??
+5. ~~Move ExpandVars into Utils~~
+6. Switch to import * from * rather than require?
+7. ~~Have MatchlistProvider call this.BuildMatchlist() from it's own constructor, then FilesetProvider won't need it's own constructor just for that.~~
+8. Better .id for Patterns than the pattern (possibly cleaned up pattern)...
+9. ~~Better way of handling setTimeout() code in ProviderPattern (via event emission)~~
 
 
 # Ideas

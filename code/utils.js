@@ -1,6 +1,7 @@
 'use strict';
 
 const { escape } = require('querystring');
+const { VM }     = require('vm2');
 
 // const logger = require('oh-my-log/lib/node6');
 // let log = logger('PSL', {
@@ -42,7 +43,7 @@ module.exports = class Util {
 				let subMatches = matches.filter(re.test, re);
 
 				matches = matches.filter((item) => {
-					return subMatches.indexOf(item) == -1;
+					return subMatches.indexOf(item) === -1;
 				})
 			} else {
 				let re  = new RegExp(part, 'i');
@@ -87,6 +88,30 @@ module.exports = class Util {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Resolves a {literal} using a sandboxed VM with optional {sandbox}
+	 *
+	 * @param {string} literal
+	 * @param {object} sandbox
+	 * @returns {string}
+	 */
+	static ResolveLiteral(literal, sandbox = {}) {
+		try {
+			let vm = new VM({
+				timeout: 25,
+				sandbox: sandbox,
+			});
+
+			if(literal.substr(0, 1) !== '`')
+				literal = '`' + literal + '`';
+
+			return vm.run(literal);
+		} catch(e) {
+			log(`Exception while processing literal: ${literal}\n${Util.indent(e.stack)}`);
+			return '';
+		}
 	}
 };
 

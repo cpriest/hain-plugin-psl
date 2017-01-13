@@ -1,8 +1,7 @@
 'use strict';
 
 //noinspection JSUnusedLocalSymbols
-let { indent, ExpandEnvVars, EscapeMatchesForURNs } = require('./utils.js');
-const { VM }     = require('vm2');
+let { indent, ExpandEnvVars, EscapeMatchesForURNs, ResolveLiteral} = require('./utils.js');
 
 let Patterns = new Map();
 
@@ -46,10 +45,10 @@ module.exports = (pluginContext, PluginDir) => {
 				return [];
 
 			return [{
-				cmd  : query.replace(this.re, EscapeMatchesForURNs.bind(this.def.cmd)),
-				title: query.replace(this.re, this.def.title),
-				desc : query.replace(this.re, this.def.desc),
-				icon : query.replace(this.re, this.def.icon),
+				cmd  : ResolveLiteral(query.replace(this.re, EscapeMatchesForURNs.bind(this.def.cmd))),
+				title: ResolveLiteral(query.replace(this.re, this.def.title)),
+				desc : ResolveLiteral(query.replace(this.re, this.def.desc)),
+				icon : ResolveLiteral(query.replace(this.re, this.def.icon)),
 			}];
 		}
 
@@ -117,21 +116,11 @@ module.exports = (pluginContext, PluginDir) => {
 			return this.objProvider
 				.matches(matches[index])
 				.map((md) => {
-					let result = (new VM({
-						timeout: 25,
-						sandbox: md,
-					})).run('[\n' +
-							'`' + this.def.cmd + '`,\n' +
-							'`' + this.def.title + '`,\n' +
-							'`' + this.def.desc + '`,\n' +
-							'`' + this.def.icon + '`,\n' +
-							']');
-
 					return {
-						cmd  : result[0],
-						title: result[1],
-						desc : result[2],
-						icon : result[3],
+						cmd  : ResolveLiteral(this.def.cmd, md),
+						title: ResolveLiteral(this.def.title, md),
+						desc : ResolveLiteral(this.def.desc, md),
+						icon : ResolveLiteral(this.def.icon, md),
 					};
 				})
 				.sort((a, b) => {

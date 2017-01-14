@@ -81,11 +81,11 @@ module.exports = class Util {
 		let result = this;
 
 		// For URN resources only
-		if(/^\w+:\/\//.test(result)) {
+		if(/^\w+:\/\//.test(result))
 			matches = matches.map(escape);
-			for(let i = 0; i < matches.length; i++)
-				result = result.replace(`\$${i + 1}`, matches[i])
-		}
+
+		for(let i = 0; i < matches.length; i++)
+			result = result.replace(`\$${i + 1}`, matches[i])
 
 		return result;
 	}

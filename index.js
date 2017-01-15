@@ -1,16 +1,18 @@
 'use strict';
 
 //noinspection JSUnusedLocalSymbols
-let { indent } = require('./code/utils.js');
+let { indent }  = require('./code/utils');
+let ResolveIcon = require('./code/util/IconResolver');
+
 const exec = require('child_process').exec;
 
 module.exports = (pluginContext) => {
 	//noinspection JSUnusedLocalSymbols
-	const app    = pluginContext.app;
+	const app = pluginContext.app;
 	//noinspection JSUnusedLocalSymbols
 	// const logger = pluginContext.logger;
 	// const prefs  = pluginContext.preferences.get();
-	const shell  = pluginContext.shell;
+	const shell = pluginContext.shell;
 
 	global.log = pluginContext.logger.log;
 
@@ -35,10 +37,10 @@ module.exports = (pluginContext) => {
 					id     : match.cmd,
 					title  : match.title,
 					desc   : match.desc,
-					icon   : match.icon,
+					icon   : match.icon.length ? match.icon : ResolveIcon(match.cmd),
 					payload: { PatternID: objPattern.id, match },
 					group  : 'PSL',
-					score: .6,
+					score  : .6,
 				});
 			}
 		}

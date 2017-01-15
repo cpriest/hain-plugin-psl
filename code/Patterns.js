@@ -1,7 +1,7 @@
 'use strict';
 
 //noinspection JSUnusedLocalSymbols
-let { indent, ExpandEnvVars, EscapeMatchesForURNs, ResolveLiteral} = require('./utils.js');
+let { indent, ExpandEnvVars, EscapeMatchesForURNs, ResolveLiteral } = require('./utils.js');
 
 let Patterns = new Map();
 

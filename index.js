@@ -1,20 +1,44 @@
 'use strict';
 
 //noinspection JSUnusedLocalSymbols
-let { indent }  = require('./code/utils');
-let ResolveIcon = require('./code/util/IconResolver');
+const { indent }  = require('./code/utils');
 
 const exec = require('child_process').exec;
 
 module.exports = (pluginContext) => {
+	let startTime = Date.now();
+
+	global.psl = Object.assign({},
+		pluginContext,
+		{
+			log          : (...args) => {
+				// if(typeof args[0] === 'string') {
+				// 	args[0] = `%c${args[0]}`;
+				// 	args.splice(1, 0, 'color: blue');
+				// }
+				pluginContext.logger.log(...args);
+			},
+			debug        : (...args) => {
+				let startOffset = Date.now() - startTime;
+
+				if(typeof args[0] === 'string')
+					args[0] = `|+${startOffset}| ${args[0]}`;
+				else
+					args.splice(0, 0, `|+${startOffset}|`);
+
+				pluginContext.logger.log(...args);
+			}
+		});
+
+
+	const ResolveIcon = require('./code/util/IconResolver');
+
 	//noinspection JSUnusedLocalSymbols
 	const app = pluginContext.app;
 	//noinspection JSUnusedLocalSymbols
 	// const logger = pluginContext.logger;
 	// const prefs  = pluginContext.preferences.get();
 	const shell = pluginContext.shell;
-
-	global.log = pluginContext.logger.log;
 
 	/** @type PatternsMap */
 	let Patterns = require('./code/Patterns.js')(pluginContext, __dirname);
@@ -40,7 +64,7 @@ module.exports = (pluginContext) => {
 					icon   : match.icon.length ? match.icon : ResolveIcon(match.cmd),
 					payload: { PatternID: objPattern.id, match },
 					group  : 'PSL',
-					score  : .6,
+					score  : 1.0,
 				});
 			}
 		}

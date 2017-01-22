@@ -109,7 +109,7 @@ module.exports = class Util {
 
 			return vm.run(literal);
 		} catch(e) {
-			log(`Exception while processing literal: ${literal}\n${Util.indent(e.stack)}`);
+			psl.log(`Exception while processing literal: ${literal}\n${Util.indent(e.stack)}`);
 			return '';
 		}
 	}

@@ -43,7 +43,7 @@ module.exports = (pluginContext, PluginDir) => {
 						});
 				}).on('end', (matches) => {
 					if(--Remaining === 0) {
-						log(`Found ${this.Matchlist.size} files for @${this.def.name}`);
+						psl.log(`Found ${this.Matchlist.size} files for @${this.def.name}`);
 
 						this.IndexingCompleted();
 					}

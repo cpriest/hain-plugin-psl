@@ -82,9 +82,9 @@ module.exports = (pluginContext, PluginDir) => {
 
 			if(this.ProviderNames.length !== 1) {
 				if(this.ProviderNames.length === 0)
-					log('WARNING: No providers identified for pattern %s, provider names look like this: @sshFiles', this.def.pattern);
+					psl.log('WARNING: No providers identified for pattern %s, provider names look like this: @sshFiles', this.def.pattern);
 				else if(this.ProviderNames.length > 1)
-					log('WARNING: Providers currently support a single provider per pattern, if you have a use case for more than one provider please let me know.');
+					psl.log('WARNING: Providers currently support a single provider per pattern, if you have a use case for more than one provider please let me know.');
 				return;
 			}
 
@@ -137,7 +137,7 @@ module.exports = (pluginContext, PluginDir) => {
 					else if(bRecentIdx >= 0)
 						return 1;
 
-					log(`sort of ${a.title} vs ${b.title} with a/b recent idx of ${aRecentIdx}/${bRecentIdx} uncaught case`);
+					psl.log(`sort of ${a.title} vs ${b.title} with a/b recent idx of ${aRecentIdx}/${bRecentIdx} uncaught case`);
 					return 0;
 				});
 		}

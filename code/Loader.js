@@ -21,12 +21,12 @@ module.exports = (pluginContext, PluginDir) => {
 				try {
 					ParseDefinition(require(filepath));
 				} catch(e) {
-					log(`While processing definition file: ${filepath}`);
-					log(indent(e.stack));
+					psl.log(`While processing definition file: ${filepath}`);
+					psl.log(indent(e.stack));
 				}
 			}
 		})).on('end', (/** string[] */ files) => {
-			log(`Finished loading ${Patterns.size} patterns and ${Providers.size} providers from ${files.length} definition files.`);
+			psl.log(`Finished loading ${Patterns.size} patterns and ${Providers.size} providers from ${files.length} definition files.`);
 		});
 	}
 

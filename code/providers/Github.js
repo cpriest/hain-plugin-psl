@@ -89,23 +89,23 @@ module.exports = (pluginContext, PluginDir) => {
 						NamedResults.set(title, item);
 					}
 					if(this.def.log && this.def.log.results && AllResults.length > 0)
-						log(AllResults);
+						psl.log(AllResults);
 
 					let [included, excluded] = this.FilterResultsWithRules(NamedResults, this.def.rules || new Map());
 
 					if(this.def.log && this.def.log.included) {
-						log(`Included Results (${this.def.name}):\n${indent(Array.from(included.keys())
+						psl.log(`Included Results (${this.def.name}):\n${indent(Array.from(included.keys())
 							.sort()
 							.join('\n'))}`);
 					}
 					if(this.def.log && this.def.log.excluded) {
-						log(`Excluded Results (${this.def.name}):\n${indent(Array.from(excluded.keys())
+						psl.log(`Excluded Results (${this.def.name}):\n${indent(Array.from(excluded.keys())
 							.sort()
 							.join('\n'))}`);
 					}
 
 					this.Matchlist = included;
-					log(`Included ${included.size}/${NamedResults.size} GitHub items for @${this.def.name}`);
+					psl.log(`Included ${included.size}/${NamedResults.size} GitHub items for @${this.def.name}`);
 
 					this.IndexingCompleted();
 				}
@@ -120,9 +120,9 @@ module.exports = (pluginContext, PluginDir) => {
 					.catch((err) => {
 						pluginContext.toast.enqueue('Failed to fetch results from Github, see debug log.');
 						if(err instanceof Error) {
-							log(err.stack);
+							psl.log(err.stack);
 						} else {
-							log(err);
+							psl.log(err);
 							QueryResolved();
 						}
 					});

@@ -33,8 +33,6 @@
  * @typedef {object} ProviderDefinition
  * @property {string} name             - The name of the provider
  * @property {string} type             - A string identifying the provider class name (Case Sensitive)
- * @property {string[]} Replacables    - An array of strings that are available for each match from the provider,
- *                                        these names can be referenced in the cmd/title/desc/icon values of a pattern.
  * @property {ProviderOptions} options - Key/Value items which specify options for the provider
  */
 

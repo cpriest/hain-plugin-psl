@@ -30,7 +30,7 @@
 
 1. ~~Separate out Pattern vs Patterns w/ Providers into different classes (Provider Patterns have much more code)~~
 2. ~~Perhaps move PCRE Matching of {string[]} to a utility function~~
-3. Notion of 'Replacables' no longer valid since sandboxing?
+3. ~~Notion of 'Replacables' no longer valid since sandboxing?~~
 4. More elegant solution to recent items list sorting, seems clunky as-is (refactored once...) ??
 5. ~~Move ExpandVars into Utils~~
 6. Switch to import * from * rather than require?

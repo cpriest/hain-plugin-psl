@@ -41,8 +41,6 @@ module.exports = (pluginContext, PluginDir) => {
 		constructor(def) {
 			this.def = def;
 			this.id  = this.def.name;
-
-			this.Replacables = [];
 		}
 
 		/**
@@ -99,18 +97,6 @@ module.exports = (pluginContext, PluginDir) => {
 				.map((match) =>
 					this.Matchlist.get(match)
 				);
-		}
-
-
-		IndexingCompleted() {
-			if(this.Matchlist.size > 0 && this.Replacables.length === 0) {
-				this.Replacables = Object.keys(
-					this.Matchlist.values()
-						.next().value
-				);
-			}
-
-			return super.IndexingCompleted();
 		}
 
 		/**

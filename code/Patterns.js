@@ -26,9 +26,6 @@ module.exports = (pluginContext, PluginDir) => {
 			for(let x of this.ReplacableKeys) {
 				// Expand Environment Variables
 				this.def[x] = ExpandEnvVars(this.def[x]);
-
-				// Sanitize any remaining ${...} present
-//				this.def[x] = this.def[x].replace(/\${(.+?)}/, '\\${$1}');
 			}
 
 			this.pattern = this.def.pattern;
@@ -97,10 +94,6 @@ module.exports = (pluginContext, PluginDir) => {
 				.then((objProvider) => {
 					/** @type {Provider} */
 					this.objProvider = objProvider;
-
-					// let re = new RegExp('\{(' + objProvider.Replacables.join('|') + ')\}');
-					// for(let x of this.ReplacableKeys)
-					// 	this.def[x] = this.def[x].replace(re, '\${md.$1}');
 				});
 		}
 

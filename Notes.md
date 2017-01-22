@@ -4,7 +4,7 @@
 2. ~~Separate definition files~~
 3. ~~Move some FilesetProvider functionality into Provider base class or a new sub-class as commonalities reveal themselves~~
 4. ~~Sort by recently used alphabetically, then the rest, alphabetically~~
-5. Automatic icon identification if unspecified
+5. ~~Automatic icon identification if unspecified~~
 6. auto-complete Providers
     1. Queryable - Google Suggest (w, w/o preview)
     2. Queryable - API (Github)
@@ -18,13 +18,9 @@
 9. More generic setup for github providers, allowing for specification of API endpoint definitions
     (this essentially moves the github specific code into a definition file)
 10. Provide pre-match completion hint for patterns
-11. My own binding to execute /quit (for dev)
-12. Partial pattern match w/ alt_description?
+12. ~~Partial pattern match w/ alt_description?~~
 
 # Research
-
-1. Do all plugins share the same global?  -- Seemed when I changed Object.prototype.entries = () => ... it screwed up other plugins
-
 
 
 # YAGNI
@@ -54,7 +50,10 @@
 
 1. Using global shortcut key while hain is open should not close hain
 2. Allow for compiled version of hain to still access debugger
-3. Make F12 work to open the debugger
-4. Improve log() function passed into plugins work as well as console.log (might require plugin-side library)
+3. ~~Improve log() function passed into plugins work as well as console.log (might require plugin-side library)~~
     a. Alternatively, a way to "hook-up" the plugins thread to the main application debugger??
-5. Be able to move the hain window
+4. Be able to move the hain window
+5. Moving hain plugins to be in < webform > elements of main UI, they would still be run in their own processes but
+    would be able to use electron utilities, they would also still be isolated from the main server, in addition they
+    would be isolated from each other.  Per @appetizermonster it would probably take a lot of re-working of the code.
+

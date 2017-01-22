@@ -1,11 +1,11 @@
 {
 	patterns: [
 		{
-			pattern: '^gm (.*)$',
+			pattern: '^gm(?: (.+)| ?)$',
 			cmd:     'https://www.google.com/maps/search/$1',
-			title:   'Search Google Maps for "$1"',
+			title:   '${"$1"=="" ? "<u>gm</u> [query] - Google Maps" : "Search \'$1\' on Google Maps"}',
 			desc:    '',
-			icon:    'https://www.google.com/images/branding/product/ico/maps_32dp.ico',
+			icon:	 '',
 		}
 	]
 }

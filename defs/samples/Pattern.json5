@@ -3,9 +3,9 @@
 		{
 			pattern: '^#(\\d+$)',
 			cmd:     'https://subdomain.atlassian.net/browse/PRJ-$1',
-			title:   'Open PRJ-$1 in JIRA',
+			title:   '${"$1"=="" ? "<u>#</u>[id] - JIRA Ticket" : "Open Ticket #$1 in JIRA"}',
 			desc:    '',
-			icon:    'https://subdomain.atlassian.net/.../favicon.ico',
+			icon:    '',
 		}
 	]
 }

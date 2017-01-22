@@ -1,11 +1,11 @@
 {
 	patterns: [
 		{
-			pattern: '^g (.*)$',
+			pattern: '^g(?: (.+)| ?)$',
 			cmd:     'https://www.google.com/search?safe=off&site=&source=hp&q=$1',
-			title:   'Search Google for "$1"',
+			title:   '${"$1"=="" ? "<u>g</u> [query] - Google Search" : "Search \'$1\' on Google"}',
 			desc:    '',
-			icon:    'https://www.google.com/favicon.ico',
+			icon:	 '',
 		}
 	]
 }

@@ -1,0 +1,11 @@
+{
+	patterns: [
+		{
+			pattern: '^php(?: (.+)| ?)$',
+			cmd:     'http://php.net/$1',
+			title:   '${"$1"=="" ? "<u>php</u> [query] - PHP Search" : "Search \'$1\' on PHP.net"}',
+			desc:    '',
+			icon:    '',
+		}
+	]
+}

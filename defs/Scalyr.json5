@@ -1,0 +1,11 @@
+{
+	patterns: [
+		{
+			pattern: '^sca?l?y?r?(?: (.+)| ?)$',
+			cmd:	'https://www.scalyr.com/events?filter=$1&startTime=3%20days',
+			title:   '${"$1"=="" ? "<u>sca</u>lyr [query] - Scalyr Search" : "Search \'$1\' on Scalyr"}',
+			desc:    '',
+			icon:    '',
+		}
+	]
+}

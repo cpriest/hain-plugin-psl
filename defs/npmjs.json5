@@ -1,0 +1,11 @@
+{
+	patterns: [
+		{
+			pattern: '^npm(?: (.+)| ?)$',
+			cmd:     'https://www.npmjs.com/search?q=$1',
+			title:   '${"$1"=="" ? "<u>npm</u> [query] - npm Search" : "Search \'$1\' on npmjs"}',
+			desc:    '',
+			icon:    '',
+		}
+	]
+}

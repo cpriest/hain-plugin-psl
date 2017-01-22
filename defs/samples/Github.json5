@@ -4,18 +4,18 @@
 	//	The {title} parameter of a github provider is saved to each item in the resultset as {prov.title}
 	patterns:  [
 		{
-			pattern: '^gh (@gh_repos)',
+			pattern: '^(@gh_repos)',
 			cmd:     '${html_url}',
 			title:	 '${prov.title}', 	// {prov.title} maps to provider -> {title}
 			desc:    '${description}',
-			icon:    '#fa fa-github',
+			icon:    '',
 		},
 		{
 			pattern: '(@gh_issues)',
-			cmd:     '${url}',
+			cmd:     '${html_url}',
 			title:   '${prov.title}',  // {prov.title} maps to provider -> {title}
 			desc:    '',
-			icon:    '#fa fa-github',
+			icon:    '',
 		}
 	],
 	providers: {

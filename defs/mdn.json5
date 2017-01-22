@@ -1,0 +1,11 @@
+{
+	patterns: [
+		{
+			pattern: '^(MDN)(?: (.+)| ?)$',
+			cmd:     'https://www.google.com/search?safe=off&site=&source=hp&hq=$1&q=$2',
+			title:   '${"$1"=="" ? "<u>$1</u> [query] - $1 Search" : "Search \'$2\' on $1 (via Google) "}',
+			desc:    '',
+			icon:    'https://developer.cdn.mozilla.net/static/img/favicon32.e02854fdcf73.png',
+		}
+	]
+}

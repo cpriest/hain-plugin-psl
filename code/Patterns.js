@@ -2,6 +2,7 @@
 
 //noinspection JSUnusedLocalSymbols
 let { indent, ExpandEnvVars, EscapeMatchesForURNs, ResolveLiteral } = require('./utils.js');
+const ResolveIcon = require('./util/IconResolver');
 
 let Patterns = new Map();
 
@@ -48,7 +49,9 @@ module.exports = (pluginContext, PluginDir) => {
 				cmd  : ResolveLiteral(query.replace(this.re, EscapeMatchesForURNs.bind(this.def.cmd))),
 				title: ResolveLiteral(query.replace(this.re, this.def.title)),
 				desc : ResolveLiteral(query.replace(this.re, this.def.desc)),
-				icon : ResolveLiteral(query.replace(this.re, this.def.icon)),
+				icon : this.def.icon
+					? ResolveLiteral(query.replace(this.re, this.def.icon))
+					: ResolveIcon(this.def.cmd.replace('/\$\d+/', '')),
 			}];
 		}
 

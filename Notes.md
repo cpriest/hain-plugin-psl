@@ -35,7 +35,7 @@
 5. ~~Move ExpandVars into Utils~~
 6. Switch to import * from * rather than require?
 7. ~~Have MatchlistProvider call this.BuildMatchlist() from it's own constructor, then FilesetProvider won't need it's own constructor just for that.~~
-8. Better .id for Patterns than the pattern (possibly cleaned up pattern)...
+8. ~~Better .id for Patterns than the pattern (possibly cleaned up pattern)...~~
 9. ~~Better way of handling setTimeout() code in ProviderPattern (via event emission)~~
 
 

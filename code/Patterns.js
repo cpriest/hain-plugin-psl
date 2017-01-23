@@ -2,7 +2,7 @@
 
 //noinspection JSUnusedLocalSymbols
 let { indent, ExpandEnvVars, EscapeMatchesForURNs, ResolveLiteral } = require('./utils.js');
-const ResolveIcon = require('./util/IconResolver');
+const ResolveIcon                                                   = require('./util/IconResolver');
 
 let Patterns = new Map();
 
@@ -18,7 +18,7 @@ module.exports = (pluginContext, PluginDir) => {
 		 */
 		constructor(def) {
 			this.def = def;
-			this.id  = this.def.pattern;
+			this.id  = this.GetSanitizedID();
 
 			this.RecentList     = new RecentItems(this.id);
 			this.ReplacableKeys = ['cmd', 'title', 'desc', 'icon'];
@@ -58,6 +58,19 @@ module.exports = (pluginContext, PluginDir) => {
 		 */
 		onExecute(match) {
 			this.RecentList.unshift(match.cmd);
+		}
+
+		GetSanitizedID() {
+			let pat = this.def.pattern
+				.replace(/\(\??:?([^)]+)\)/g, '{$1}')	// Translate Captures to { }
+				.replace(/[?:\s]+/g, '')				// Strip Characters
+				.replace(/[|]+/g, ',');					// Translate | to ,
+			let cmd = this.def.cmd
+				.replace(/([\w]+:\/\/|www.)/g, '')		// Strip URI type
+				.replace(/[^\w\d%.]+/g, '_');			// Translate non alpha-numeric & % to _
+
+			return `#${pat}#~${cmd}`
+				.replace(/[\\/:*?<>|]+/g, '_');		// Finally _ any illegal file characters (windows) from line
 		}
 	}
 

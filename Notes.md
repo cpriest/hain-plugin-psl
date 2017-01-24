@@ -25,6 +25,8 @@
 
 # YAGNI
 
+# Todo
+1. Update plugin to new hain-0.6 API
 
 # Refactoring
 

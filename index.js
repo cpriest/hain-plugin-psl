@@ -30,7 +30,6 @@ module.exports = (pluginContext) => {
 			}
 		});
 
-
 	const ResolveIcon = require('./code/util/IconResolver');
 
 	//noinspection JSUnusedLocalSymbols
@@ -48,6 +47,23 @@ module.exports = (pluginContext) => {
 	 */
 	function startup() {
 		require('./code/Loader.js')(pluginContext, __dirname);
+
+		psl.indexer.set('psl', (query) => {
+			let results = [ ];
+			for(let objPattern of Patterns.values()) {
+				for(let match of objPattern.matches(query)) {
+					results.push({
+						id     : match.cmd,
+						primaryText  : match.title,
+						secondaryText   : match.desc,
+						icon   : match.icon.length ? match.icon : ResolveIcon(match.cmd),
+						group  : 'PSL Pattern',
+						// score  : 1.0,
+					});
+				}
+			}
+			return results;
+		});
 	}
 
 	/**
@@ -55,19 +71,6 @@ module.exports = (pluginContext) => {
 	 * @param res
 	 */
 	function search(query, res) {
-		for(let objPattern of Patterns.values()) {
-			for(let match of objPattern.matches(query)) {
-				res.add({
-					id     : match.cmd,
-					title  : match.title,
-					desc   : match.desc,
-					icon   : match.icon.length ? match.icon : ResolveIcon(match.cmd),
-					payload: { PatternID: objPattern.id, match },
-					group  : 'PSL',
-					score  : 1.0,
-				});
-			}
-		}
 	}
 
 	/**
@@ -77,9 +80,6 @@ module.exports = (pluginContext) => {
 	 * @param {*} payload
 	 */
 	function execute(cmd, payload) {
-		Patterns.get(payload.PatternID)
-			.onExecute(payload.match);
-
 		if(cmd.match(/^[\w\d]+:\/\//))
 			shell.openItem(cmd);
 		else

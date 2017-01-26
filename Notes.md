@@ -25,15 +25,25 @@
 
 # YAGNI
 
+1. Allow patterns to provide multiple results??
+
 # Todo
+
 1. Update plugin to new hain-0.6 API
+    * Done:
+        * ~~Both patterns and providers are now working with hain 0.6~~
+    * Todo:
+        * Eliminate concept of "PatternProvider," roll pattern definition into a provider definition
+        * Allow providers to specify their Group
+        * Update JetBrainStubs declarations for changes as well as pluginContext & psl global
+        * Expand on providers to allow for each item produce an entry for \[ { title, etc }, { ... } \]
+        * 
 
 # Refactoring
 
 1. ~~Separate out Pattern vs Patterns w/ Providers into different classes (Provider Patterns have much more code)~~
-2. ~~Perhaps move PCRE Matching of {string[]} to a utility function~~
+2. ~~Perhaps move PCRE Matching of {string\[\]} to a utility function~~
 3. ~~Notion of 'Replacables' no longer valid since sandboxing?~~
-4. More elegant solution to recent items list sorting, seems clunky as-is (refactored once...) ??
 5. ~~Move ExpandVars into Utils~~
 6. Switch to import * from * rather than require?
 7. ~~Have MatchlistProvider call this.BuildMatchlist() from it's own constructor, then FilesetProvider won't need it's own constructor just for that.~~

@@ -9,7 +9,6 @@ let Patterns = new Map();
 module.exports = (pluginContext, PluginDir) => {
 	/** @type {ProvidersMap} */
 	let Providers   = require('./providers/Providers.js')(pluginContext, PluginDir);
-	let RecentItems = require('./RecentItems.js')(pluginContext, PluginDir);
 
 	class Pattern {
 		/**
@@ -20,7 +19,6 @@ module.exports = (pluginContext, PluginDir) => {
 			this.def = def;
 			this.id  = this.GetSanitizedID();
 
-			this.RecentList     = new RecentItems(this.id);
 			this.ReplacableKeys = ['cmd', 'title', 'desc', 'icon'];
 
 			for(let x of this.ReplacableKeys) {
@@ -50,14 +48,6 @@ module.exports = (pluginContext, PluginDir) => {
 					? ResolveLiteral(query.replace(this.re, this.def.icon))
 					: ResolveIcon(this.def.cmd.replace('/\$\d+/', '')),
 			}];
-		}
-
-		/**
-		 * Called when a given match is executed
-		 * @param {MatchDefinition} match
-		 */
-		onExecute(match) {
-			this.RecentList.unshift(match.cmd);
 		}
 
 		GetSanitizedID() {
@@ -105,8 +95,20 @@ module.exports = (pluginContext, PluginDir) => {
 
 			Providers.get(this.ProviderNames[0])
 				.then((objProvider) => {
-					/** @type {Provider} */
-					this.objProvider = objProvider;
+					psl.indexer.set(objProvider.id,
+						[...objProvider.Matchlist]
+							.map(([title, item]) => {
+								let cmd = ResolveLiteral(this.def.cmd, item);
+
+								return {
+									id           : cmd,
+									primaryText  : ResolveLiteral(this.def.title, item),
+									secondaryText: ResolveLiteral(this.def.desc, item),
+									icon         : this.def.icon ? ResolveLiteral(this.def.icon, item) : ResolveIcon(cmd),
+									group        : 'Providers',
+								};
+							})
+					);
 				});
 		}
 
@@ -116,41 +118,41 @@ module.exports = (pluginContext, PluginDir) => {
 		 * @returns {MatchDefinition[]}
 		 */
 		matches(query) {
-			if(!this.objProvider || !this.re.test(query))
+			// No longer being used as providers are sent straight into hain via the Indexer API
+			// if(!this.objProvider || !this.re.test(query))
 				return [];
-
-			let matches = this.re.exec(query);
-			let index   = 1;
-
-			return this.objProvider
-				.matches(matches[index])
-				.map((md) => {
-					return {
-						cmd  : ResolveLiteral(this.def.cmd, md),
-						title: ResolveLiteral(this.def.title, md),
-						desc : ResolveLiteral(this.def.desc, md),
-						icon : ResolveLiteral(this.def.icon, md),
-					};
-				})
-				.sort((a, b) => {
-					let aRecentIdx = this.RecentList.indexOf(a.cmd),
-						bRecentIdx = this.RecentList.indexOf(b.cmd);
-
-					if(aRecentIdx === bRecentIdx)
-						return a.title.localeCompare(b.title);
-
-					if(aRecentIdx >= 0 && bRecentIdx >= 0)
-						return aRecentIdx - bRecentIdx;
-					else if(aRecentIdx >= 0)
-						return -1;
-					else if(bRecentIdx >= 0)
-						return 1;
-
-					psl.log(`sort of ${a.title} vs ${b.title} with a/b recent idx of ${aRecentIdx}/${bRecentIdx} uncaught case`);
-					return 0;
-				});
+			//
+			// let matches = this.re.exec(query);
+			// let index   = 1;
+			//
+			// return this.objProvider
+			// 	.matches(matches[index])
+			// 	.map((md) => {
+			// 		return {
+			// 			cmd  : ResolveLiteral(this.def.cmd, md),
+			// 			title: ResolveLiteral(this.def.title, md),
+			// 			desc : ResolveLiteral(this.def.desc, md),
+			// 			icon : ResolveLiteral(this.def.icon, md),
+			// 		};
+			// 	})
+			// 	.sort((a, b) => {
+			// 		let aRecentIdx = this.RecentList.indexOf(a.cmd),
+			// 			bRecentIdx = this.RecentList.indexOf(b.cmd);
+			//
+			// 		if(aRecentIdx === bRecentIdx)
+			// 			return a.title.localeCompare(b.title);
+			//
+			// 		if(aRecentIdx >= 0 && bRecentIdx >= 0)
+			// 			return aRecentIdx - bRecentIdx;
+			// 		else if(aRecentIdx >= 0)
+			// 			return -1;
+			// 		else if(bRecentIdx >= 0)
+			// 			return 1;
+			//
+			// 		psl.log(`sort of ${a.title} vs ${b.title} with a/b recent idx of ${aRecentIdx}/${bRecentIdx} uncaught case`);
+			// 		return 0;
+			// 	});
 		}
-
 
 		/**
 		 * @param {PatternDefinition} def

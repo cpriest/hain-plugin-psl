@@ -15,10 +15,6 @@
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="ES6" />
   </component>
-  <component name="JsBowerSettings">
-    <exe-path />
-    <config-path />
-  </component>
   <component name="PhpUnit">
     <phpunit_settings>
       <PhpUnitSettings />

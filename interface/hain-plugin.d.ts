@@ -6,6 +6,7 @@ declare namespace hain {
 
 	/**
 	 * The main pluginContext parameter your plugin is initialized with
+	 * @since v0.5
 	 */
 	interface PluginContext {
 		/** Directory of hain managed plugins */
@@ -21,34 +22,37 @@ declare namespace hain {
 		COMPATIBLE_API_VERSIONS: string[];
 
 		/** Access to application functions */
-		app: HainApp;
+		app: App;
 
 		/** Access to clipboard functions */
-		clipboard: HainClipboard;
+		clipboard: Clipboard;
 
 		/** Access to toast functionality */
-		toast: HainToaster;
+		toast: Toaster;
 
 		/** Access to shell functionality */
-		shell: HainShell;
+		shell: Shell;
 
 		/** Access to logging functionality */
-		logger: HainLogger;
+		logger: Logger;
 
 		/** Access to matching utility functions */
-		matchUtil: HainMatch;
+		matchUtil: MatchUtil;
 
 		/** Access to hain global preferences */
-		globalPreferences: HainPreferences;
+		globalPreferences: Preferences;
 
 		/** Access to plugin local storage */
-		localStorage: HainLocalStorage;
+		localStorage: PluginLocalStorage;
 
 		/** Access to hain plugin indexer */
-		indexer: HainIndexer;
+		indexer: Indexer;
 	}
 
-	class HainApp {
+	/**
+	 * @since v0.5
+	 */
+	class App {
 		/**
 		 * Restarts hain
 		 */
@@ -99,9 +103,10 @@ declare namespace hain {
 	}
 
 	/**
+	 * @since v0.5
 	 * @see http://electron.atom.io/docs/api/clipboard/
 	 */
-	class HainClipboard {
+	class Clipboard {
 		readText(): void;			// Read the clipboard in text format
 		writeText(): void;			// Write to the clipboard in text format
 		readHTML(): void;			// Read the clipboard in HTML format
@@ -109,35 +114,56 @@ declare namespace hain {
 		clear(): void;				// Clear the clipboard of contents
 	}
 
-	class HainToaster {
+	/**
+	 * @since v0.5
+	 */
+	class Toaster {
 		enqueue(): void;			// You can enqueue your notifications by using this function.
 	}
 
-	class HainShell {
+	/**
+	 * @since v0.5
+	 */
+	class Shell {
 		showItemInFolder(): void;	// Show the given file in a file manager.
 		openItem(): void;			// Open the given file in the desktop’s default manner.
 		openExternal(): void;		// Open the given external protocol URL in the desktop’s default manner.
 	}
 
-	class HainLogger {
+	/**
+	 * @since v0.5
+	 */
+	class Logger {
 		log(): void;				// Logs your messages.
 	}
 
-	class HainMatch {
+	/**
+	 * @since v0.5
+	 */
+	class MatchUtil {
 		fuzzy(): void;					//
 		fwdfuzzy(): void;				//
 		head(): void;					//
 		makeStringBoldHtml(): void;		//
 	}
 
-	class HainPreferences {
+	/**
+	 * @since v0.5
+	 */
+	class Preferences {
 	}
 
-	class HainLocalStorage {
+	/**
+	 * @since v0.5
+	 */
+	class PluginLocalStorage /*extends NodePersist */{
 
 	}
 
-	class HainIndexer {
+	/**
+	 * @since v0.6
+	 */
+	class Indexer {
 
 	}
 }

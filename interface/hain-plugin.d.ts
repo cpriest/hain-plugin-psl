@@ -2,6 +2,66 @@
 // Project: appetizermonster/hain
 // Definitions by: Clint Priest <https://github.com/cpriest>
 
+type milliseconds = number;
+
+/**
+ * @see https://github.com/simonlast/node-persist
+ */
+declare namespace NodePersist {
+
+	interface InitOptions {
+		dir?: string;
+		stringify?: (toSerialize: any) => string;
+		parse?: (serialized: string) => any;
+		encoding?: string;
+		logging?: boolean | Function;
+		continuous?: boolean;
+		interval?: milliseconds | boolean;
+		ttl?: milliseconds | boolean;
+	}
+
+	class NodePersist {
+		init(options?: InitOptions, callback?: Function): Promise<any>;
+
+		initSync(options?: InitOptions): void;
+
+		getItem(key: string, callback?: (err: any, value: any) => any): Promise<any>;
+
+		getItemSync(key: string): any;
+
+		setItem(key: string, value: any, callback?: (err: any) => any): Promise<any>;
+
+		setItemSync(key: string, value: any): void;
+
+		removeItem(key: string, callback?: (err: any) => any): Promise<any>;
+
+		removeItemSync(key: string): void;
+
+		clear(callback?: (err: any) => any): Promise<any>;
+
+		clearSync(): void;
+
+		values(): Array<any>;
+
+		valuesWithKeyMatch(match: string): Array<any>;
+
+		keys(): Array<string>;
+
+		length(): number;
+
+		forEach(callback: (key: string, value: any) => void): void;
+
+		persist(callback?: (err: any) => any): Promise<any>;
+
+		persistSync(): void;
+
+		persistKey(key: string, callback?: (err: any) => any): Promise<any>;
+
+		persistKeySync(key: string): void;
+	}
+}
+
+
 declare namespace hain {
 
 	/**
@@ -107,44 +167,123 @@ declare namespace hain {
 	 * @see http://electron.atom.io/docs/api/clipboard/
 	 */
 	class Clipboard {
-		readText(): void;			// Read the clipboard in text format
-		writeText(): void;			// Write to the clipboard in text format
-		readHTML(): void;			// Read the clipboard in HTML format
-		writeHTML(): void;			// Write to the clipboard in HTML format
-		clear(): void;				// Clear the clipboard of contents
+		/**
+		 * Read the clipboard in text format
+		 *
+		 * @param type The clipboard type to read
+		 */
+		readText(type?: string): Promise<string>;
+
+		/**
+		 * Write to the clipboard in text format
+		 *
+		 * @param text The content to place on the clipboard
+		 * @param type The clipboard type to write
+		 */
+		writeText(text: string, type?: string): void;
+
+		/**
+		 * Read the clipboard in HTML format
+		 *
+		 * @param type The clipboard type to read
+		 */
+		readHTML(type?: string): Promise<string>;
+
+		/**
+		 * Write to the clipboard in HTML format
+		 *
+		 * @param html The html content to place on the clipboard
+		 * @param type The clipboard type to clear
+		 */
+		writeHTML(html: string, type?: string): void;
+
+		/**
+		 * Clear the clipboard of contents
+		 *
+		 * @param type The clipboard type to clear
+		 */
+		clear(type: string): void;
 	}
 
 	/**
 	 * @since v0.5
+	 *
+	 * You can show notifications to user by using Toast.
+	 *
+	 * @note Enqueued notifications are processed in order and will not be processed while the window isn’t visible.
 	 */
 	class Toaster {
-		enqueue(): void;			// You can enqueue your notifications by using this function.
+		/**
+		 * You can enqueue your notifications by using this function.
+		 *
+		 * @param message	Notification message
+		 * @param duration	Duration to display message, default is 2000ms
+		 */
+		enqueue(message: string, duration?: milliseconds): void;
 	}
 
 	/**
 	 * @since v0.5
 	 */
 	class Shell {
-		showItemInFolder(): void;	// Show the given file in a file manager.
-		openItem(): void;			// Open the given file in the desktop’s default manner.
-		openExternal(): void;		// Open the given external protocol URL in the desktop’s default manner.
+		/**
+		 * Show the given file in a file manager.
+		 *
+		 * @param fullPath	The full path to the item to be shown
+		 */
+		showItemInFolder(fullPath: string): void;
+
+		/**
+		 * Open the given file in the operating systems' default manner.
+		 *
+		 * @param fullPath    The full path to the item to be shown
+		 */
+		openItem(fullPath: string): void;
+
+		/**
+		 * Open the given external protocol URL in the desktop’s default manner.
+		 *
+		 * @param fullPath    The full path to the item to be opened
+		 */
+		openExternal(fullPath: string): void;
 	}
 
 	/**
 	 * @since v0.5
 	 */
 	class Logger {
-		log(): void;				// Logs your messages.
+		/**
+		 * Logs your messages to the console.
+		 *
+		 * @param message	The message to be shown (compatible with Chrome console.log)
+		 * @param args		Additional arguments to be shown
+		 */
+		log(message: string, ...args: any[]): void;
 	}
 
 	/**
 	 * @since v0.5
 	 */
 	class MatchUtil {
-		fuzzy(): void;					//
-		fwdfuzzy(): void;				//
-		head(): void;					//
-		makeStringBoldHtml(): void;		//
+		/**
+		 *
+		 */
+		fuzzy(): void;
+
+		/**
+		 *
+		 */
+		fwdfuzzy(): void;
+
+		/**
+		 *
+		 */
+		head(): void;
+
+		/**
+		 *
+		 */
+		makeStringBoldHtml(): void;
 	}
 
 	/**
@@ -156,7 +295,7 @@ declare namespace hain {
 	/**
 	 * @since v0.5
 	 */
-	class PluginLocalStorage /*extends NodePersist */{
+	class PluginLocalStorage extends NodePersist.NodePersist {
 
 	}
 

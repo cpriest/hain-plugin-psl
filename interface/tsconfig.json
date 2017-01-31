@@ -1,8 +1,8 @@
 {
 	"compilerOptions": {
-		"module":           "commonjs",
+		"module":           "es2015",
 		"lib":              [
-			"es6"
+			"es2015"
 		],
 		"noImplicitAny":    true,
 		"noImplicitThis":   true,

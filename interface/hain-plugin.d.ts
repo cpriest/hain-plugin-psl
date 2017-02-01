@@ -290,6 +290,21 @@ declare namespace hain {
 	 * @since v0.5
 	 */
 	class Preferences {
+		/**
+		 * Returns raw preferences object if path is undefined, otherwise it returns the value at path of object,
+		 *
+		 * @param path    See path rules at
+		 * 					@see https://lodash.com/docs#get
+		 */
+		get(path?: string): any;
+
+		/**
+		 * Add a listener to PreferencesObject.
+		 *
+		 * @param eventName	The `update` event is emitted when plugin preferences have changed
+		 * @param listener	The call back to be used.
+		 */
+		on(eventName: string, listener: (pref:string) => void): void;
 	}
 
 	/**
@@ -300,9 +315,59 @@ declare namespace hain {
 	}
 
 	/**
+	 * IndexedResult is used as a return value for Indexer
+	 */
+	interface IndexedResult {
+		/**
+		 * An identifier (recommended tobe unique), used as argument to execute(), default is `undefined`
+		 */
+		id?: any;
+
+		/**
+		 * Extra information, used as second argument to execute(), default is `undefined`
+		 */
+		payload?: any;
+
+		/**
+		 * Title text for item.
+		 * @see <a href="http://appetizermonster.github.io/hain/docs/text-format/">Text Format</a>
+		 */
+		primaryText: string|object;
+
+		/**
+		 * Description text for item.
+		 * @see <a href="http://appetizermonster.github.io/hain/docs/text-format/">Text Format</a>
+		 */
+		secondaryText: string|object;
+
+		/**
+		 * Icon URL, default is `icon` of <a href="http://appetizermonster.github.io/hain/docs/preferences-json-format/">package.json</a>.
+		 * @see <a href="http://appetizermonster.github.io/hain/docs/icon-url-format/">Icon URL Format</a>
+ 		 */
+		icon?: string;
+
+		/**
+		 * Redirection query, default is undefined
+		 */
+		redirect?: string;
+
+		/**
+		 * Result grouping name, default is `group` of
+		 * 		<a href="http://appetizermonster.github.io/hain/docs/preferences-json-format/">package.json</a>
+		 **/
+		group?: string;
+
+		/**
+		 * Whether it has HTML Preview, default is false; used with render().
+		 */
+		preview?: boolean;
+	}
+
+	/**
 	 * @since v0.6
 	 */
 	class Indexer {
-
+		set(id: string, value: IndexedResult | IndexedResult[]): void;
+		set(id: string, value: (query:string) => IndexedResult|IndexedResult[] ): void;
 	}
 }

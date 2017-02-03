@@ -65,16 +65,53 @@ declare namespace hain {
 
 	/**
 	 * These are the functions your plugin can/must implement
+	 *
+	 * @since v0.5
 	 */
-	interface Plugin {
+	export class Plugin {
 
+		/**
+		 *  (Optional)
+		 *  This function will be invoked on startup once. you can do any preparations here.
+		 */
+		startup(): void;
+
+		/**
+		 * (Required)
+		 * This function will be invoked when user changed input text. > Note: search function is ensured to be invoked once per `30ms`
+		 *
+		 * @param query		The query the user has entered so far
+		 * @param res		The results of the query should be added to this object
+		 *
+		 * @since v0.6		search() is now only called when the query begins with your package.json prefix value
+		 */
+		search(query:string, res:ResponseObject): void;
+
+		/**
+		 * (Optional)
+		 * This function will be invoked when user executes a Result you send in the search function.
+		 *
+		 * @param id		id of the selected {SearchResult} or {IndexedResult}
+		 * @param payload	payload of the selected {SearchResult} or {IndexedResult}
+		 */
+		execute(id:any, payload:any): void;
+
+		/**
+		 * (Optional)
+		 * If present, is called when an {SearchResult} or {IndexedResult} is selected from the list
+		 *
+		 * @param id         id of the selected {SearchResult} or {IndexedResult}
+		 * @param payload    payload of the selected {SearchResult} or {IndexedResult}
+		 * @param render	 Call this function with html to be rendered in the preview area
+		 */
+		renderPreview(id:any, payload:any, render:(html:string) => void): void;
 	}
 
 	/**
 	 * The main pluginContext parameter your plugin is initialized with
 	 * @since v0.5
 	 */
-	interface PluginContext {
+	export interface PluginContext {
 		/** Directory of hain managed plugins */
 		MAIN_PLUGIN_REPO: string;
 
@@ -118,7 +155,7 @@ declare namespace hain {
 	/**
 	 * @since v0.5
 	 */
-	interface App {
+	export interface App {
 		/**
 		 * Restarts hain
 		 */
@@ -172,7 +209,7 @@ declare namespace hain {
 	 * @since v0.5
 	 * @see http://electron.atom.io/docs/api/clipboard/
 	 */
-	interface Clipboard {
+	export interface Clipboard {
 		/**
 		 * Read the clipboard in text format
 		 *
@@ -218,7 +255,7 @@ declare namespace hain {
 	 *
 	 * @note Enqueued notifications are processed in order and will not be processed while the window isn’t visible.
 	 */
-	interface Toaster {
+	export interface Toaster {
 		/**
 		 * You can enqueue your notifications by using this function.
 		 *
@@ -231,7 +268,7 @@ declare namespace hain {
 	/**
 	 * @since v0.5
 	 */
-	interface Shell {
+	export interface Shell {
 		/**
 		 * Show the given file in a file manager.
 		 *
@@ -257,7 +294,7 @@ declare namespace hain {
 	/**
 	 * @since v0.5
 	 */
-	interface Logger {
+	export interface Logger {
 		/**
 		 * Logs your messages to the console.
 		 *
@@ -295,7 +332,7 @@ declare namespace hain {
 	/**
 	 * @since v0.5
 	 */
-	interface Preferences {
+	export interface Preferences {
 		/**
 		 * Returns raw preferences object if path is undefined, otherwise it returns the value at path of object,
 		 *
@@ -316,49 +353,14 @@ declare namespace hain {
 	/**
 	 * @since v0.5
 	 */
-	interface PluginLocalStorage extends NodePersist.LocalStorage {
+	export interface PluginLocalStorage extends NodePersist.LocalStorage {
 
 	}
 
-
-
 	/**
-	 * You can use this interface for adding or removing {SearchResult} entries.  This interface
-	 * 	is always provided as the second argument to Plugin.search().
-	 *
 	 * @since v0.5
-	 *
-	 * @example
-	 * <pre>
-	 *	function search(query, res) {
-	 *	    res.add({
-	 *	        id: 'temp',
-	 *	        title: 'Fetching...',
-	 *	        desc: 'Please wait a second'
-	 *	    });
-	 *	    setTimeout(() => res.remove('temp'), 1000);
-	 *	}
-	 * </pre>
 	 */
-	interface ResponseObject {
-		/**
-		 * Add a {SearchResult} to the result-set
-		 *
-		 * @param result	The result to be added to the list of searchable values
-		 */
-		add(result: SearchResult|SearchResult[]): void;
-
-		/**
-		 * You can remove a {SearchResult} from the result-set that you previously added
-		 * @param id
-		 */
-		remove(id: string): void;
-	}
-
-	/**
-	 * IndexedResult is used as a return value for Indexer
-	 */
-	interface IndexedResult {
+	interface BaseResult {
 		/**
 		 * An identifier (recommended tobe unique), used as argument to execute(), default is `undefined`
 		 */
@@ -368,18 +370,6 @@ declare namespace hain {
 		 * Extra information, used as second argument to execute(), default is `undefined`
 		 */
 		payload?: any;
-
-		/**
-		 * Title text for item.
-		 * @see <a href="http://appetizermonster.github.io/hain/docs/text-format/">Text Format</a>
-		 */
-		primaryText: string;
-
-		/**
-		 * Description text for item.
-		 * @see <a href="http://appetizermonster.github.io/hain/docs/text-format/">Text Format</a>
-		 */
-		secondaryText: string;
 
 		/**
 		 * Icon URL, default is `icon` of <a href="http://appetizermonster.github.io/hain/docs/preferences-json-format/">package.json</a>.
@@ -405,9 +395,80 @@ declare namespace hain {
 	}
 
 	/**
+	 * @since v0.5
+	 */
+	export interface SearchResult extends BaseResult {
+		/**
+		 * Title text for item.
+		 *
+		 * @see <a href="http://appetizermonster.github.io/hain/docs/text-format/">Text Format</a>
+		 */
+		title: string;
+
+		/**
+		 * Description text for item.
+		 *
+		 * @see <a href="http://appetizermonster.github.io/hain/docs/text-format/">Text Format</a>
+		 */
+		desc: string;
+	}
+
+	/**
+	 * You can use this interface for adding or removing {SearchResult} entries.  This interface
+	 * 	is always provided as the second argument to Plugin.search().
+	 *
+	 * @since v0.5
+	 *
+	 * @example
+	 * <pre>
+	 *	function search(query, res) {
+	 *	    res.add({
+	 *	        id: 'temp',
+	 *	        title: 'Fetching...',
+	 *	        desc: 'Please wait a second'
+	 *	    });
+	 *	    setTimeout(() => res.remove('temp'), 1000);
+	 *	}
+	 * </pre>
+	 */
+	export interface ResponseObject {
+		/**
+		 * Add a {SearchResult} to the result-set
+		 *
+		 * @param result	The result to be added to the list of searchable values
+		 */
+		add(result: SearchResult|SearchResult[]): void;
+
+		/**
+		 * You can remove a {SearchResult} from the result-set that you previously added
+		 * @param id
+		 */
+		remove(id: string): void;
+	}
+
+	/**
+	 * IndexedResult is used as a return value for Indexer
+	 */
+	export interface IndexedResult extends BaseResult {
+		/**
+		 * Title text for item.
+		 *
+		 * @see <a href="http://appetizermonster.github.io/hain/docs/text-format/">Text Format</a>
+		 */
+		primaryText: string;
+
+		/**
+		 * Description text for item.
+		 *
+		 * @see <a href="http://appetizermonster.github.io/hain/docs/text-format/">Text Format</a>
+		 */
+		secondaryText: string;
+	}
+
+	/**
 	 * @since v0.6
 	 */
-	interface Indexer {
+	export interface Indexer {
 		/**
 		 * Adds a set of results to the built-in indexer to be searchable, execute() is called with the id and payload provided.
 		 *

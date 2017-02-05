@@ -19,5 +19,8 @@
     "request": "2.79",
     "vm2": "^3.1.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/electron": "^1.4.31",
+    "@types/node": "^7.0.5"
+  }
 }

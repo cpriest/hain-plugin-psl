@@ -1,7 +1,7 @@
 'use strict';
 
 //noinspection JSUnusedLocalSymbols
-const { indent }  = require('./code/utils');
+import { indent } from 'utils';
 
 const exec = require('child_process').exec;
 
@@ -30,6 +30,9 @@ module.exports = (pluginContext) => {
 			}
 		});
 
+	// console.log(pluginContext);
+	// console.log(pluginContext.localStorage.__proto__);
+
 	const ResolveIcon = require('./code/util/IconResolver');
 
 	//noinspection JSUnusedLocalSymbols
@@ -42,53 +45,46 @@ module.exports = (pluginContext) => {
 	/** @type PatternsMap */
 	let Patterns = require('./code/Patterns.js')(pluginContext, __dirname);
 
-	/**
-	 * Called when the plugin is first loaded
-	 */
-	function startup() {
-		require('./code/Loader.js')(pluginContext, __dirname);
+	class PSL_Plugin {
+		startup() {
+			require('./code/Loader.js')(pluginContext, __dirname);
 
-		psl.indexer.set('psl', (query) => {
-			let results = [ ];
-			for(let objPattern of Patterns.values()) {
-				for(let match of objPattern.matches(query)) {
-					results.push({
-						id     : match.cmd,
-						primaryText  : match.title,
-						secondaryText   : match.desc,
-						icon   : match.icon.length ? match.icon : ResolveIcon(match.cmd),
-						group  : 'PSL Pattern',
-						// score  : 1.0,
-					});
+			psl.indexer.set('psl', (query) => {
+				let results = [ ];
+				for(let objPattern of Patterns.values()) {
+					for(let match of objPattern.matches(query)) {
+						results.push({
+							id           : match.cmd,
+							primaryText  : match.title,
+							secondaryText: match.desc,
+							icon         : match.icon.length ? match.icon : ResolveIcon(match.cmd),
+							group        : 'PSL Pattern',
+							// score  : 1.0,
+						});
+					}
 				}
-			}
-			return results;
-		});
+				return results;
+			});
+		}
+
+		search(query, res) {
+			res.add({
+				title  : '',
+				payload: '',
+			})
+		}
+
+		execute(id, payload) {
+			if(id.match(/^[\w\d]+:\/\//))
+				shell.openItem(id);
+			else
+				exec(id);
+		}
+
+		renderPreview(id, payload, render) {
+			// render('<html><body>Something</body></html>');
+		}
 	}
 
-	/**
-	 * @param {string} query
-	 * @param res
-	 */
-	function search(query, res) {
-	}
-
-	/**
-	 * Executes the given cmd that was accepted by the user
-	 *
-	 * @param {string} cmd
-	 * @param {*} payload
-	 */
-	function execute(cmd, payload) {
-		if(cmd.match(/^[\w\d]+:\/\//))
-			shell.openItem(cmd);
-		else
-			exec(cmd);
-	}
-
-	function renderPreview(id, payload, render) {
-//		render('<html><body>Something</body></html>');
-	}
-
-	return { startup, search, execute, renderPreview };
+	return new PSL_Plugin();
 };

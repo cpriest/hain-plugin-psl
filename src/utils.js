@@ -17,7 +17,7 @@ Object.entries =
 			.map(k => [k, obj[k]]);
 
 //noinspection JSUnusedLocalSymbols
-module.exports = class Util {
+export class Util {
 	static indent(msg, level=1) {
 		let prefix = "    ".repeat(level);
 		return msg.replace(/^(.+)$/mg, prefix+'$1');

@@ -12,6 +12,6 @@
 		"noEmit":           true
 	},
 	"files":           [
-		"hain-plugin.d.ts"
+		"../src/@types/hain-plugin.d.ts"
 	]
 }

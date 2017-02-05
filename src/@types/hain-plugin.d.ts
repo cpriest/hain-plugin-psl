@@ -111,7 +111,7 @@ declare namespace hain {
 	 * The main pluginContext parameter your plugin is initialized with
 	 * @since v0.5
 	 */
-	export interface PluginContext {
+	export class PluginContext {
 		/** Directory of hain managed plugins */
 		MAIN_PLUGIN_REPO: string;
 

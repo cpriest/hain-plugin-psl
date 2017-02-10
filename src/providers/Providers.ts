@@ -1,12 +1,12 @@
 'use strict';
 
 //noinspection JSUnusedLocalSymbols
-let { indent, reQuery } = require('../utils.ts');
+let { indent, reQuery } = require('../utils');
 
-type ProviderResolver = PromiseResolver<Provider | MatchlistProvider>;
-type ProviderPromise = Promise< Provider | MatchlistProvider >;
+declare type ProviderResolver = Promise<MatchlistProvider & Provider>;
+declare type ProviderPromise = Promise<MatchlistProvider & Provider>;
 
-class ProvidersMap extends Map<string, Provider |MatchlistProvider | ProviderPromise > {
+class ProvidersMap extends Map<string, ProviderPromise & MatchlistProvider & Provider> {
 	Resolvers: Map<string, ProviderResolver >;
 	DefaultMaxMatches: number;
 
@@ -15,14 +15,14 @@ class ProvidersMap extends Map<string, Provider |MatchlistProvider | ProviderPro
 		this.Resolvers = new Map();
 	}
 
-	get(key:string): ProviderPromise | Provider | MatchlistProvider {
+	get(key:string): ProviderPromise & MatchlistProvider & Provider {
 		if(this.has(key))
 			return super.get(key);
 
 		let p = new Promise((resolve, reject) => {
-				this.Resolvers.set(key, resolve);
+			this.Resolvers.set(key, resolve);
 		});
-		super.set(key, p);
+		super.set(key, p );
 
 		return p;
 	}
@@ -34,8 +34,9 @@ class ProvidersMap extends Map<string, Provider |MatchlistProvider | ProviderPro
 		this.Resolvers.get(objProvider.id)(objProvider);
 	}
 }
-
 export let Providers = new ProvidersMap();
+
+Providers.DefaultMaxMatches = 10;
 
 export class Provider {
 	def: ProviderDefinitions;
@@ -79,7 +80,6 @@ export class MatchlistProvider extends Provider {
 	}
 
 	matches(query:string): MatchDefinition {
-		/** @type {string[]} */
 		let matches = reQuery(query, Array.from(this.Matchlist.keys()));
 
 		let MaxMatches = (this.def.options && this.def.options.MaxMatches) || Providers.DefaultMaxMatches;
@@ -104,5 +104,3 @@ export class MatchlistProvider extends Provider {
 }
 // Providers.Provider          = Provider;
 // Providers.MatchlistProvider = MatchlistProvider;
-
-Providers.DefaultMaxMatches = 10;

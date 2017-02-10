@@ -45,7 +45,7 @@ class Pattern {
 	/**
 	 * Checks the query for a match against this pattern
 	 */
-	matches(query: string): MatchDefinition {
+	matches(query: string): MatchDefinition[] {
 		if (!this.re.test(query))
 			return [];
 

@@ -77,7 +77,7 @@ module.exports = (() => {
 		let FirstParam = '';
 
 		if(['"', "'"].indexOf(param.substr(0, 1)) !== -1)
-			FirstParam = param.replace(/^(('|")[^'"]+('|").+$)/, '$1');
+			FirstParam = param.replace(/^(['"][^'"]+['"].+$)/, '$1');
 		else
 			FirstParam = param.split(' ')[0];
 

@@ -9,7 +9,7 @@ let { indent } = require('./utils.js');
 module.exports = (pluginContext, PluginDir) => {
 	/** @type ProvidersMap */
 	const Providers = require('./providers/Providers')(pluginContext, PluginDir);
-	/** @type PatternsMap */
+	/** @type Map */
 	const Patterns = require("./Patterns.js")(pluginContext, PluginDir);
 
 	/**

@@ -10,8 +10,5 @@
 		"baseUrl":          "../",
 		"types":            [],
 		"noEmit":           true
-	},
-	"files":           [
-		"hain-plugin.d.ts"
-	]
+	}
 }

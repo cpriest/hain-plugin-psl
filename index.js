@@ -8,6 +8,7 @@ const exec = require('child_process').exec;
 module.exports = (pluginContext) => {
 	let startTime = Date.now();
 
+	/** @type hain.PluginContext */
 	global.psl = Object.assign({},
 		pluginContext,
 		{
@@ -39,7 +40,7 @@ module.exports = (pluginContext) => {
 	// const prefs  = pluginContext.preferences.get();
 	const shell = pluginContext.shell;
 
-	/** @type PatternsMap */
+	/** @type Map */
 	let Patterns = require('./code/Patterns.js')(pluginContext, __dirname);
 
 	/**

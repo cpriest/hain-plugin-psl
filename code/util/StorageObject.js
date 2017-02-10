@@ -7,7 +7,7 @@ module.exports = (key) => {
 		set: (obj, prop, value, receiver) => {
 			// psl.debug(`setting ${prop} to ${value} and saving`);
 			obj[prop] = value;
-			psl.localStorage.setItem(key, obj);
+			psl.localStorage.setItemSync(key, obj);
 			// psl.debug(obj, PersistedObject);
 			return true;
 		}

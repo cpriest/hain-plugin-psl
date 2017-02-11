@@ -31,7 +31,7 @@ class ProvidersMap extends Map {
 
 let Providers = new ProvidersMap();
 
-module.exports = (pluginContext, PluginDir) => {
+module.exports = (() => {
 
 	class Provider {
 		/**
@@ -113,4 +113,4 @@ module.exports = (pluginContext, PluginDir) => {
 	Providers.DefaultMaxMatches = 10;
 
 	return Providers;
-};
+})();

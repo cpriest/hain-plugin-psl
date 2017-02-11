@@ -6,9 +6,9 @@ const ResolveIcon                                                   = require('.
 
 let Patterns = new Map();
 
-module.exports = (pluginContext, PluginDir) => {
+module.exports = (() => {
 	/** @type {ProvidersMap} */
-	let Providers   = require('./providers/Providers.js')(pluginContext, PluginDir);
+	let Providers   = require('./providers/Providers.js');
 
 	class Pattern {
 		/**
@@ -178,4 +178,4 @@ module.exports = (pluginContext, PluginDir) => {
 	Patterns.Create = Create;
 
 	return Patterns;
-};
+})();

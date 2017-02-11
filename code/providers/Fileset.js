@@ -7,8 +7,8 @@ const Glob = require("glob").Glob;
 let { indent } = require('../utils');
 
 //noinspection JSUnusedLocalSymbols
-module.exports = (pluginContext, PluginDir) => {
-	let Providers = require('./Providers')(pluginContext, PluginDir);
+module.exports = (() => {
+	let Providers = require('./Providers');
 
 	class FilesetProvider extends Providers.MatchlistProvider {
 		/**
@@ -64,4 +64,4 @@ module.exports = (pluginContext, PluginDir) => {
 		}
 	}
 	return FilesetProvider;
-};
+})();

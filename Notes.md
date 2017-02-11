@@ -35,20 +35,25 @@
     * Todo:
         * Eliminate concept of "PatternProvider," roll pattern definition into a provider definition
         * Allow providers to specify their Group
-        * Update JetBrainStubs declarations for changes as well as pluginContext & psl global
+        * ~~Update JetBrainStubs declarations for changes as well as pluginContext & psl global~~
         * Expand on providers to allow for each item produce an entry for \[ { title, etc }, { ... } \]
-        * 
+        * Fix all inspection errors
+2. ~~Produce a preliminary hain-plugin-d.ts typescript definition~~
+    1. Submit it to NPMjs.org as @type
+4. ~~Produce a hain-plugin-psl.d.ts typescript definition~~
+    1. Submit it to NPMjs.org as @type
 
 # Refactoring
 
 1. ~~Separate out Pattern vs Patterns w/ Providers into different classes (Provider Patterns have much more code)~~
 2. ~~Perhaps move PCRE Matching of {string\[\]} to a utility function~~
 3. ~~Notion of 'Replacables' no longer valid since sandboxing?~~
-5. ~~Move ExpandVars into Utils~~
-6. Switch to import * from * rather than require?
-7. ~~Have MatchlistProvider call this.BuildMatchlist() from it's own constructor, then FilesetProvider won't need it's own constructor just for that.~~
-8. ~~Better .id for Patterns than the pattern (possibly cleaned up pattern)...~~
-9. ~~Better way of handling setTimeout() code in ProviderPattern (via event emission)~~
+4. ~~Move ExpandVars into Utils~~
+5. Switch to import * from * rather than require?
+6. ~~Have MatchlistProvider call this.BuildMatchlist() from it's own constructor, then FilesetProvider won't need it's own constructor just for that.~~
+7. ~~Better .id for Patterns than the pattern (possibly cleaned up pattern)...~~
+8. ~~Better way of handling setTimeout() code in ProviderPattern (via event emission)~~
+9. ~~Eliminate pluginContext, PluginDir being passed everywhere~~
 
 
 # Ideas

@@ -6,11 +6,11 @@ const Glob = require("glob").Glob;
 //noinspection JSUnusedLocalSymbols
 let { indent } = require('./utils.js');
 
-module.exports = (pluginContext, PluginDir) => {
+module.exports = (() => {
 	/** @type ProvidersMap */
-	const Providers = require('./providers/Providers')(pluginContext, PluginDir);
+	const Providers = require('./providers/Providers');
 	/** @type Map */
-	const Patterns = require("./Patterns.js")(pluginContext, PluginDir);
+	const Patterns = require("./Patterns.js");
 
 	/**
 	 * @param {string} globPattern    A glob pattern of files to match
@@ -46,7 +46,7 @@ module.exports = (pluginContext, PluginDir) => {
 			pDef.name = name;
 
 			try {
-				ProviderClass = require('./providers/' + pDef.type)(pluginContext, PluginDir);
+				ProviderClass = require('./providers/' + pDef.type);
 				let objProvider = new ProviderClass(pDef);
 				Providers.set(objProvider.id, objProvider);
 			} catch(e) {
@@ -56,6 +56,5 @@ module.exports = (pluginContext, PluginDir) => {
 			}
 		}
 	}
-
-	return LoadDefinitionFiles(PluginDir + '/defs/*.json*');
-};
+	return LoadDefinitionFiles(__dirname + '/../defs/*.json*');
+})();

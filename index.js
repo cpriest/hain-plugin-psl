@@ -17,7 +17,7 @@ module.exports = (pluginContext) => {
 				// 	args[0] = `%c${args[0]}`;
 				// 	args.splice(1, 0, 'color: blue');
 				// }
-				pluginContext.logger.log(...args);
+				psl.logger.log(...args);
 			},
 			debug        : (...args) => {
 				let startOffset = Date.now() - startTime;
@@ -27,27 +27,20 @@ module.exports = (pluginContext) => {
 				else
 					args.splice(0, 0, `|+${startOffset}|`);
 
-				pluginContext.logger.log(...args);
+				psl.logger.log(...args);
 			}
 		});
 
 	const ResolveIcon = require('./code/util/IconResolver');
 
-	//noinspection JSUnusedLocalSymbols
-	const app = pluginContext.app;
-	//noinspection JSUnusedLocalSymbols
-	// const logger = pluginContext.logger;
-	// const prefs  = pluginContext.preferences.get();
-	const shell = pluginContext.shell;
-
 	/** @type Map */
-	let Patterns = require('./code/Patterns.js')(pluginContext, __dirname);
+	let Patterns = require('./code/Patterns.js');
 
 	/**
 	 * Called when the plugin is first loaded
 	 */
 	function startup() {
-		require('./code/Loader.js')(pluginContext, __dirname);
+		require('./code/Loader.js');
 
 		psl.indexer.set('psl', (query) => {
 			let results = [ ];
@@ -82,7 +75,7 @@ module.exports = (pluginContext) => {
 	 */
 	function execute(cmd, payload) {
 		if(cmd.match(/^[\w\d]+:\/\//))
-			shell.openItem(cmd);
+			psl.shell.openItem(cmd);
 		else
 			exec(cmd);
 	}

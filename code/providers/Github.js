@@ -56,8 +56,8 @@ class Github {
 }
 
 //noinspection JSUnusedLocalSymbols
-module.exports = (pluginContext, PluginDir) => {
-	let Providers = require('./Providers')(pluginContext, PluginDir);
+module.exports = (() => {
+	let Providers = require('./Providers');
 
 	class GithubProvider extends Providers.MatchlistProvider {
 		/**
@@ -118,7 +118,7 @@ module.exports = (pluginContext, PluginDir) => {
 						QueryResolved();
 					})
 					.catch((err) => {
-						pluginContext.toast.enqueue('Failed to fetch results from Github, see debug log.');
+						psl.toast.enqueue('Failed to fetch results from Github, see debug log.');
 						if(err instanceof Error) {
 							psl.log(err.stack);
 						} else {
@@ -174,4 +174,4 @@ module.exports = (pluginContext, PluginDir) => {
 		}
 	}
 	return GithubProvider;
-};
+})();

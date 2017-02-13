@@ -6,11 +6,10 @@ const Glob = require("glob").Glob;
 //noinspection JSUnusedLocalSymbols
 let { indent } = require('../utils');
 
-//noinspection JSUnusedLocalSymbols
 module.exports = (() => {
-	let Providers = require('./Providers');
+	let { Providers, MatchlistProvider } = require('./Providers');
 
-	class FilesetProvider extends Providers.MatchlistProvider {
+	class FilesetProvider extends MatchlistProvider {
 		/**
 		 * Builds the fileset according to the definition, called by parent class
 		 */

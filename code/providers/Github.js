@@ -57,9 +57,9 @@ class Github {
 
 //noinspection JSUnusedLocalSymbols
 module.exports = (() => {
-	let Providers = require('./Providers');
+	let { MatchlistProvider } = require('./Providers');
 
-	class GithubProvider extends Providers.MatchlistProvider {
+	class GithubProvider extends MatchlistProvider {
 		/**
 		 * Builds the matchlist according to what's queryable by the Github API
 		 */

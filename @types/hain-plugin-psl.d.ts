@@ -2,7 +2,7 @@
  * These classes provide for proper type Defs used throughout the project in JSdoc form.
  */
 
-declare type ProviderDefinitions = ProviderDefinition | FilesetProviderDefinition;
+declare type ProviderDefinitions = ProviderDefinition & FilesetProviderDefinition;
 
 declare interface Definition {
 	patterns: PatternDefinition[];
@@ -10,23 +10,13 @@ declare interface Definition {
 	providers: ProviderDefinitions[];
 }
 
-declare interface PatternDefinition {
-	/** - A regular expression pattern specifying what to match against user input */
+declare interface PatternDefinition extends MatchDefinition {
+	/**
+	 * A regular expression pattern specifying what to match against user input.
+	 * Pattern matches may be used in subsequent properties, each property inherited
+	 * from MatchDefinition is interpreted as a template literal.
+	 **/
 	pattern: string;
-	// pattern matches may be used in subsequent properties.
-
-	/** - The command to pass to shell.open() */
-	cmd: string;
-
-	/** - The title shown to the user for the match */
-	title: string;
-
-	/** - The description shown to the user for the match */
-	desc: string;
-
-	/** - The icon to be used for the match */
-	icon: string;
-//	@TODO: If not specified, an appropriate icon match will be attempted (load url for favicon, icon from exe, etc).
 }
 
 declare interface MatchDefinition {
@@ -44,13 +34,20 @@ declare interface MatchDefinition {
 }
 
 declare interface ProviderDefinition {
-	/** - The name of the provider */
+	/** The name of the provider */
 	name: string;
 
-	/** - A string identifying the provider class name (Case Sensitive) */
-		type: string;
+	/** A string identifying the provider class name (Case Sensitive) */
+	type: string;
 
-	/** - Key/Value items which specify options for the provider */
+	/**
+	 * Specifies how each result is converted to a match result for hain,
+	 * each string is interpreted as a template literal with the global
+	 * containing all variables available by the provider class.
+ 	 */
+	result:MatchDefinition;
+
+	/** Key/Value items which specify options for the provider */
 	options: ProviderOptions;
 }
 

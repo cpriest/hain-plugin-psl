@@ -91,27 +91,6 @@ module.exports = (() => {
 		}
 
 		/**
-		 * @param {string} query    A pattern match value to query against this provider
-		 * @returns {MatchDefinition[]}
-		 */
-		matches(query) {
-			/** @type {string[]} */
-			let matches = reQuery(query, Array.from(this.Matchlist.keys()));
-
-			let MaxMatches = (this.def.options && this.def.options.MaxMatches) || Providers.DefaultMaxMatches;
-
-			return matches
-				.reduce((acc, item) => {
-					if(acc.length < MaxMatches)
-						acc.push(item);
-					return acc;
-				}, [])
-				.map((match) =>
-					this.Matchlist.get(match)
-				);
-		}
-
-		/**
 		 * Called by the Provider when the dataset has been prepared/collected and is ready for matching
 		 */
 		IndexingCompleted() {

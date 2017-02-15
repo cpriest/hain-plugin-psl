@@ -85,42 +85,134 @@ module.exports = (() => {
 		 */
 		constructor(def) {
 			super(def);
-			this.Matchlist = new Map();
 
-			this.BuildMatchlist();
+			this.Rebuild();
+			setInterval(x => this.Rebuild(), ((this.def.options && this.def.options.refresh) || 15) * 60 * 1000);
 		}
 
 		/**
-		 * Called by the Provider when the dataset has been prepared/collected and is ready for matching
+		 * Called to rebuild the result set and populate the hain indexer with the results
 		 */
-		IndexingCompleted() {
-			psl.indexer.set(this.id,
-				[...this.Matchlist]
-					.map(([title, item]) => {
-						let cmd = ResolveLiteral(this.def.result.cmd, item);
+		Rebuild() {
+			this.BuildMatchlist()
+				.then((AllItems) => {
+					if(this.def.log && this.def.log.results && AllItems.length > 0)
+						psl.log(AllItems);
 
-						return {
-							id           : cmd,
-							primaryText  : ResolveLiteral(this.def.result.title, item),
-							secondaryText: ResolveLiteral(this.def.result.desc, item),
-							icon         : this.def.result.icon ? ResolveLiteral(this.def.result.icon, item) : ResolveIcon(cmd),
-							group        : 'Providers',
-						};
-					})
-			);
+					let [IncludedItems, ExcludedItems] = this.FilterResultsWithRules(AllItems, this.def.rules || []);
+
+					let IncludedHainItems = this.TransformItems(IncludedItems);
+
+					if(this.def.log) {
+						if(this.def.log.included) {
+							psl.log(`Included Items (${this.def.name}):\n${indent(
+								IncludedHainItems.pluck('primaryText')
+									.sort()
+									.join('\n'))}`);
+						}
+						if(this.def.log.excluded) {
+							let ExcludedHainItems = this.TransformItems(ExcludedItems);
+							psl.log(`Excluded Items (${this.def.name}):\n${indent(
+								ExcludedHainItems.pluck('primaryText')
+									.sort()
+									.join('\n'))}`);
+						}
+					}
+					psl.indexer.set(this.def.name, IncludedHainItems);
+					psl.log(`Included ${IncludedItems.length}/${AllItems.length} items for ${this.def.name}`);
+				}).catch((err) => {
+					if(err instanceof Error) {
+						psl.log(err.stack);
+					} else {
+						psl.log(err);
+					}
+					psl.toast.enqueue(`Failed building resultset for ${this.constructor.name}.`);
+				});
+
+		}
+
+		/**
+		 * @param Results {object[]}
+		 * @param rules {PropertyFilterRule[]}
+		 *
+		 * @returns {[object[],object[]]}
+		 */
+		FilterResultsWithRules(Results, rules) {
+			let included = [],
+				excluded = [];
+
+			if(rules.length === 0)
+				return [Results, excluded];
+
+			for(let item of Results) {
+				let include = true;
+
+				for(let rule of rules) {
+					if(rule.exclude) {
+						if(this.RuleMatches(rule.exclude, item))
+							include = false;
+					} else if(rule.include) {
+						if(this.RuleMatches(rule.include, item))
+							include = true;
+					}
+				}
+				(include
+					? included
+					: excluded).push(item);
+			}
+			return [included, excluded];
+		}
+
+		/**
+		 * Returns true if the given rule matches the item
+		 * @param {object} rule
+		 * @param {object} item
+		 */
+		RuleMatches(rule, item) {
+			for(let key of Object.keys(rule)) {
+				if(item[key] === undefined)
+					continue;
+
+				if(typeof item[key] === 'string') {
+					if(!(new RegExp(rule[key], 'i')).test(item[key]))
+						return false;
+				} else {
+					if(item[key] !== rule[key])
+						return false;
+				}
+			}
+			return true;
+		}
+
+		/**
+		 *
+		 * @param items {object[]}
+		 * @returns {hain.IndexedResult[]}
+		 */
+		TransformItems(items) {
+			return items.
+				map((item) => {
+					let cmd = ResolveLiteral(this.def.result.cmd, item);
+
+					return {
+						id           : cmd,
+						primaryText  : ResolveLiteral(this.def.result.title, item),
+						secondaryText: ResolveLiteral(this.def.result.desc, item),
+						icon         : this.def.result.icon ? ResolveLiteral(this.def.result.icon, item) : ResolveIcon(cmd),
+						group        : 'Providers',
+					};
+				});
 		}
 
 		/**
 		 * Called to build the matchlist
 		 *
-		 * @returns {Map}
+		 * @returns {Promise<object[]>}
 		 */
 		BuildMatchlist() {
 			throw new Error("MatchlistProvider.BuildMatchlist() must be over-ridden.");
 		}
 	}
-
-	Providers.DefaultMaxMatches = 10;
 
 	return { Providers, Provider, MatchlistProvider };
 })();

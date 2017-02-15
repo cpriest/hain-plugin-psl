@@ -16,38 +16,40 @@ module.exports = (() => {
 		BuildMatchlist() {
 			let Remaining = (this.def.glob || []).length;
 
-			for(let globPattern of this.def.glob || []) {
-				let globBasepath = this.FindBasepath(globPattern);
+			return new Promise((resolve, reject) => {
+				for(let globPattern of this.def.glob || []) {
+					let globBasepath = this.FindBasepath(globPattern);
+					let AllResults = [ ];
 
-				new Glob(globPattern, (/** string[] */err, /** string[] */ matches) => {
-					matches
-						.filter((filepath) => {
-							for(let filter of this.def.filters || []) {
-								if(filepath.match(new RegExp(filter)))
-									return false;
-							}
-							return true;
-						})
-						.forEach((filepath) => {
-							let shortPath = filepath.replace(globBasepath, ''),
-								r         = path.parse(shortPath),
-								title     = `${shortPath.replace(r.ext, '')}`;
+					new Glob(globPattern, (/** string[] */err, /** string[] */ matches) => {
+						AllResults.push(
+							...matches
+								.filter((filepath) => {
+									for(let filter of this.def.filters || []) {
+										if(filepath.match(new RegExp(filter)))
+											return false;
+									}
+									return true;
+								})
+								.map((filepath) => {
+									let shortPath = filepath.replace(globBasepath, ''),
+										r         = path.parse(shortPath),
+										title     = `${shortPath.replace(r.ext, '')}`;
 
-							this.Matchlist.set(title, {
-								path : filepath,
-								title: title,
-								name : r.name,
-								base : r.base,
-							});
-						});
-				}).on('end', (matches) => {
-					if(--Remaining === 0) {
-						psl.log(`Found ${this.Matchlist.size} files for @${this.def.name}`);
-
-						this.IndexingCompleted();
-					}
-				});
-			}
+									return {
+										path : filepath,
+										title: title,
+										name : r.name,
+										base : r.base,
+									};
+								})
+						);
+					}).on('end', (matches) => {
+						if(--Remaining === 0)
+							resolve(AllResults);
+					});
+				}
+			});
 		}
 
 		/**

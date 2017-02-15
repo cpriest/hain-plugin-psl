@@ -9,7 +9,7 @@ let { indent } = require('./utils.js');
 module.exports = (() => {
 	/** @type ProvidersMap */
 	const { Providers } = require('./providers/Providers');
-	/** @class PatternsMap */
+	/** @type PatternsMap */
 	const { Patterns } = require("./Patterns.js");
 
 	/**

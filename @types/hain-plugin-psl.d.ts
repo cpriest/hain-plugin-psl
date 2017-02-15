@@ -2,6 +2,8 @@
  * These classes provide for proper type Defs used throughout the project in JSdoc form.
  */
 
+type minutes = number;
+
 declare type ProviderDefinitions = ProviderDefinition & FilesetProviderDefinition;
 
 declare interface Definition {
@@ -51,7 +53,21 @@ declare interface ProviderDefinition {
 	options: ProviderOptions;
 }
 
-declare interface FilesetProviderDefinition extends ProviderDefinition {
+declare interface MatchlistProviderDefinition extends ProviderDefinition {
+	/** Options available to all Matchlist Providers */
+	options:MatchlistProviderOptions;
+}
+
+/** A single include/exclude rule which can be used to filter matchlist items (object hashes) */
+declare interface PropertyFilterRule {
+	/** A set of properties to match against an object, matches will be included */
+	include?: {};
+
+	/** A set of properties to match against an object, matches will be excluded */
+	exclude?: {};
+}
+
+declare interface FilesetProviderDefinition extends MatchlistProviderDefinition {
 	/** - String patterns used as input to glob() for creating the fileset */
 	glob: string | string[];
 
@@ -60,16 +76,18 @@ declare interface FilesetProviderDefinition extends ProviderDefinition {
 
 	/** - Regular expression strings whose matches will be removed from the fileset */
 	options: FilesetProviderOptions;
-
-	/** - A key/value set of perl style substitution command. */
-	//transforms:object;
-	// title:  If present, any presentational use of a filename will use the transformed version
 }
 
+/** Basic Provider Options available to all Providers */
 declare interface ProviderOptions {
-	/** - The maximum items a provider should return (Default: 10) */
-	MaxMatches: number;
 }
 
-declare interface FilesetProviderOptions extends ProviderOptions {
+/** Options available to all MatchlistProviders */
+declare interface MatchlistProviderOptions extends ProviderOptions {
+	/** Number of minutes between refreshes of match list, default: 15 minutes */
+	refresh: minutes;
+}
+
+/** Options specific to FilesetProviders */
+declare interface FilesetProviderOptions extends MatchlistProviderOptions {
 }

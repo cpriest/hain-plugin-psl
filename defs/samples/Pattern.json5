@@ -1,10 +1,21 @@
 {
 	patterns: [
 		{
+			// The regular expression pattern to match input against (PCRE)
 			pattern: '^#(\\d+$)',
+
+			// The command or url to open if the item is executed
 			cmd:     'https://subdomain.atlassian.net/browse/PRJ-$1',
+
+			// The title of the displayed result if the input matches the pattern
+			//	In the example below, $1 is the match, if that match is empty, then the
+			//	title is shown as contextual help, otherwise it shows "Open Ticket ..."
 			title:   '${"$1"=="" ? "<u>#</u>[id] - JIRA Ticket" : "Open Ticket #$1 in JIRA"}',
+
+			// The description of the match, use as desired
 			desc:    '',
+
+			// Specify an icon url, if left blank an attempt will be made to auto-resolve an icon
 			icon:    '',
 		}
 	]

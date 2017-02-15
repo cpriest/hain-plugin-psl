@@ -1,7 +1,7 @@
 'use strict';
 
 //noinspection JSUnusedLocalSymbols
-const { indent }  = require('./code/utils');
+const { indent } = require('./code/utils');
 
 const exec = require('child_process').exec;
 
@@ -12,14 +12,14 @@ module.exports = (pluginContext) => {
 	global.psl = Object.assign({},
 		pluginContext,
 		{
-			log          : (...args) => {
+			log  : (...args) => {
 				// if(typeof args[0] === 'string') {
 				// 	args[0] = `%c${args[0]}`;
 				// 	args.splice(1, 0, 'color: blue');
 				// }
 				psl.logger.log(...args);
 			},
-			debug        : (...args) => {
+			debug: (...args) => {
 				let startOffset = Date.now() - startTime;
 
 				if(typeof args[0] === 'string')
@@ -43,15 +43,15 @@ module.exports = (pluginContext) => {
 		require('./code/Loader.js');
 
 		psl.indexer.set('psl', (query) => {
-			let results = [ ];
+			let results = [];
 			for(let objPattern of Patterns.values()) {
 				for(let match of objPattern.matches(query)) {
 					results.push({
-						id     : match.cmd,
+						id           : match.cmd,
 						primaryText  : match.title,
-						secondaryText   : match.desc,
-						icon   : match.icon.length ? match.icon : ResolveIcon(match.cmd),
-						group  : 'PSL Pattern',
+						secondaryText: match.desc,
+						icon         : match.icon.length ? match.icon : ResolveIcon(match.cmd),
+						group        : 'PSL Pattern',
 						// score  : 1.0,
 					});
 				}

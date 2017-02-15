@@ -1,35 +1,19 @@
 {
-
-	// All object properties provided by a resultset are available for use in the pattern parameters
-	//	The {title} parameter of a github provider is saved to each item in the resultset as {prov.title}
-	patterns:  [
-		{
-			pattern: '^(@gh_repos)',
-			cmd:     '${html_url}',
-			title:	 '${prov.title}', 	// {prov.title} maps to provider -> {title}
-			desc:    '${description}',
-			icon:    '',
-		},
-		{
-			pattern: '(@gh_issues)',
-			cmd:     '${html_url}',
-			title:   '${prov.title}',  // {prov.title} maps to provider -> {title}
-			desc:    '',
-			icon:    '',
-		}
-	],
 	providers: {
-		gh_repos: {
+		'GitHub Repos': {
 			type:    'Github',
+
+			// Match objects from github are translated to hain items with the below template literals
+			result: {
+				cmd:     '${html_url}',
+				title:   '${full_name} : GitHub Repository',
+				desc:    '${description}',
+				icon:    '',
+			},
 
 			// This specifies the Github search URI to be used for this result set
 			// 		@see https://developer.github.com/v3/search/#search-repositories
 			uri:   '/search/repositories',
-
-			// Title is the name that each entry of this provider result set will match against the search input
-			// 		This value is processed as a Template Literal in a sandbox, each item is accessible as a locally
-			//		defined variable, the key names depend on the query {uri} being used.
-			title: '${full_name} : GitHub Repository',
 
 			// You must put your username and a Personal Access Token in auth to query github.  At present this provider will authenticate with your provided credentials and
 			//	query for all repositories public/private that you can access
@@ -43,6 +27,7 @@
 			queries: [
 				'user:cpriest user:resgen'
 			],
+
 			// Rules take the following form, any properties within the exclude/include must match the repository property
 			//	provided back by GitHub (@see: https://developer.github.com/v3/repos/#response)
 			//	- Entries are included by default unless excluded
@@ -56,10 +41,11 @@
 				{ exclude: { full_name: 'cpriest/(msys-setup|multitail-.+|tools-pwhois)' } },
 				{ include: { full_name: 'example/(sub1|sub2|sub3)$' } },
 			],
+
 			options: {
-				// MaxMatches:	10,			// Limit the maximum matches for any search of this provider (DEFAULT: 10)
-				refresh: 60, 				// Refresh the resultset every {refresh} minutes (NOT YET IMPLEMENTED)
+				// refresh: 15, 			// Refresh the resultset every {refresh} minutes (DEFAULT: 15)
 			},
+
 			log: {
 				// included:	true,		// Log to stdout the included results (for setup/debugging)
 				// excluded:	true,		// Log to stdout the excluded results (for setup/debugging)
@@ -68,14 +54,18 @@
 		},
 		gh_issues: {
 			type:    'Github',
+
+			// Match objects from github are translated to hain items with the below template literals
+			result: {
+				cmd:     '${html_url}',
+				title:   '${title} : ${repository_url.split("/").slice(-1).join("/")}#${number} : GitHub Issue',
+				desc:    '',
+				icon:    '',
+			},
+
 			// This specifies the Github search URI to be used for this result set
 			// 		@see https://developer.github.com/v3/search/#search-repositories
 			uri:     '/search/issues',
-
-			// Title is the name that each entry of this provider result set will match against the search input
-			// 		This value is processed as a Template Literal in a sandbox, each item is accessible as a locally
-			//		defined variable, the key names depend on the query {uri} being used.
-			title: '${title} : ${repository_url.split("/").slice(-1).join("/")}#${number} : GitHub Issue',
 
 			// You must put your username and a Personal Access Token in auth to query github.  At present this provider will authenticate with your provided credentials and
 			//	query for all repositories public/private that you can access
@@ -93,9 +83,9 @@
 			// Look Mom, No Rules
 
 			options: {
-				// MaxMatches:	10,			// Limit the maximum matches for any search of this provider (DEFAULT: 10)
-				refresh: 60, 				// Refresh the resultset every {refresh} minutes (NOT YET IMPLEMENTED)
+				// refresh: 15, 			// Refresh the resultset every {refresh} minutes (DEFAULT: 15)
 			},
+
 			log: {
 				// included:	true,		// Log to stdout the included results (for setup/debugging)
 				// excluded:	true,		// Log to stdout the excluded results (for setup/debugging)

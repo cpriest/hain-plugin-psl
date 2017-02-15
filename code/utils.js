@@ -16,6 +16,15 @@ Object.entries =
 		: obj => Object.keys(obj)
 			.map(k => [k, obj[k]]);
 
+// Shim in Array.prototype.pluck until its in the standard, why isn't it?
+Array.prototype.pluck =
+	typeof Array.prototype.pluck === 'function'
+		? Array.prototype.pluck
+		: function(key) {
+			return this.map(item => item[key]);
+		  };
+
+
 //noinspection JSUnusedLocalSymbols
 module.exports = class Util {
 	static indent(msg, level=1) {

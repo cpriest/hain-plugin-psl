@@ -5,7 +5,7 @@ const { indent } = require('../utils');
 const qs         = require('querystring');
 const { VM }     = require('vm2');
 
-class Github {
+class GithubApi {
 	constructor(auth) {
 		this.req = require('request')
 			.defaults({
@@ -62,115 +62,42 @@ module.exports = (() => {
 	class GithubProvider extends MatchlistProvider {
 		/**
 		 * Builds the matchlist according to what's queryable by the Github API
+		 *
+		 * @returns {Promise<object[]>}
 		 */
 		BuildMatchlist() {
-			let API = new Github(this.def.auth);
+			let API = new GithubApi(this.def.auth);
 
-			this.ResolveQueries(API);
-		}
-
-		ResolveQueries(API) {
-			let AllResults = [];
-			let resolved   = 0;
-
-			let QueryResolved = () => {
-				resolved++;
-				if(resolved === this.def.queries.length) {
-					let NamedResults = new Map();
-
-					for(let item of AllResults) {
-						let title = (new VM({
-							timeout: 25,
-							sandbox: item,
-						})).run('`' + this.def.title + '`;');
-
-						item.prov = { title };
-
-						NamedResults.set(title, item);
-					}
-					if(this.def.log && this.def.log.results && AllResults.length > 0)
-						psl.log(AllResults);
-
-					let [included, excluded] = this.FilterResultsWithRules(NamedResults, this.def.rules || new Map());
-
-					if(this.def.log && this.def.log.included) {
-						psl.log(`Included Results (${this.def.name}):\n${indent(Array.from(included.keys())
-							.sort()
-							.join('\n'))}`);
-					}
-					if(this.def.log && this.def.log.excluded) {
-						psl.log(`Excluded Results (${this.def.name}):\n${indent(Array.from(excluded.keys())
-							.sort()
-							.join('\n'))}`);
-					}
-
-					this.Matchlist = included;
-					psl.log(`Included ${included.size}/${NamedResults.size} GitHub items for @${this.def.name}`);
-
-					this.IndexingCompleted();
-				}
-			};
-
-			for(let query of this.def.queries) {
-				API.get(`${this.def.uri}?per_page=100&q=` + qs.escape(query))
-					.then((results) => {
-						AllResults = AllResults.concat([...results]);
-						QueryResolved();
-					})
-					.catch((err) => {
-						psl.toast.enqueue('Failed to fetch results from Github, see debug log.');
-						if(err instanceof Error) {
-							psl.log(err.stack);
-						} else {
-							psl.log(err);
-							QueryResolved();
-						}
-					});
-			}
-		}
-
-		FilterResultsWithRules(NamedResults, rules) {
-			let included = new Map(),
-				excluded = new Map();
-
-			if(rules.size === 0)
-				return [NamedResults, excluded];
-
-			for(let [title, item] of NamedResults) {
-				let include = true;
-
-				for(let rule of rules) {
-					if(rule.exclude) {
-						if(this.RuleMatches(rule.exclude, item))
-							include = false;
-					} else if(rule.include) {
-						if(this.RuleMatches(rule.include, item))
-							include = true;
-					}
-				}
-				(include
-					? included
-					: excluded).set(title, item);
-			}
-			return [included, excluded];
+			return this.ResolveQueries(API);
 		}
 
 		/**
-		 * Returns true if the given rule matches the item
-		 * @param {object} rule
-		 * @param {object} item
+		 * @param API {GithubApi}
+		 *
+		 * @returns {Promise<object[]>}
 		 */
-		RuleMatches(rule, item) {
-			for(let key of Object.keys(rule)) {
-				if(typeof item[key] === 'string') {
-					if(!(new RegExp(rule[key], 'i')).test(item[key]))
-						return false;
-				} else {
-					if(item[key] !== rule[key])
-						return false;
+		ResolveQueries(API) {
+			let AllResults = [];
+			let resolved   = this.def.queries.length;
+
+			return new Promise((resolve, reject) => {
+				for(let query of this.def.queries) {
+					API.get(`${this.def.uri}?per_page=100&q=` + qs.escape(query))
+						.then((results) => {
+							AllResults = AllResults.concat([...results]);
+							if(--resolved === 0)
+								resolve(AllResults);
+						})
+						.catch((err) => {
+							if(err instanceof Error) {
+								psl.log(err.stack);
+							} else {
+								psl.log(err);
+							}
+							psl.toast.enqueue('Failed to fetch results from Github, see debug log.');
+						});
 				}
-			}
-			return true;
+			});
 		}
 	}
 	return GithubProvider;

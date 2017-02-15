@@ -12,7 +12,7 @@
         2. ~~Pull Requests~~
         3. ~~Issues~~
     3. Queryable - API (JIRA)
-    4. Refresh Interval
+    4. ~~Refresh Interval~~
     5. ~~Filesystem - Directory / Pattern Matching~~
 7. ~~Negative Search Filter (dep -chi)~~
 8. ~~Extend pattern parameter substitution to full sandboxed template literal capability~~
@@ -36,7 +36,7 @@
         * ~~Eliminate concept of "PatternProvider," roll pattern definition into a provider definition~~
         * Allow providers to specify their Group
         * ~~Update JetBrainStubs declarations for changes as well as pluginContext & psl global~~
-        * Expand on providers to allow for each item produce an entry for \[ { title, etc }, { ... } \]
+        * ~~Expand on providers to allow for each item produce an entry for \[ { title, etc }, { ... } \]~~
         * ~~Fix all inspection errors~~
 2. ~~Produce a preliminary hain-plugin-d.ts typescript definition~~
     1. Submit it to NPMjs.org as @type
@@ -44,7 +44,7 @@
     1. Submit it to NPMjs.org as @type
 4. Get gulp / babel going to build the app so we can use newer features
 5. Allow for any properties (future proof to some extent) to be resolved contained within result definition
-6. Remove custom 'title' from github provider, roll into standard resolution of result
+6. ~~Remove custom 'title' from github provider, roll into standard resolution of result~~
 
 # Refactoring
 

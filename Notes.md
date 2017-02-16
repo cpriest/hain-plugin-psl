@@ -42,7 +42,7 @@
     1. Submit it to NPMjs.org as @type
 3. ~~Produce a hain-plugin-psl.d.ts typescript definition~~
     1. Submit it to NPMjs.org as @type
-4. Get gulp / babel going to build the app so we can use newer features
+4. ~~Get gulp / babel going to build the app so we can use newer features~~
 5. Allow for any properties (future proof to some extent) to be resolved contained within result definition
 6. ~~Remove custom 'title' from github provider, roll into standard resolution of result~~
 

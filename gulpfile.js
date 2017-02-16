@@ -1,8 +1,9 @@
 "use strict";
 
-const gulp  = require('gulp');
-const babel = require('gulp-babel');
-const del = require('del');
+const gulp     = require('gulp');
+const babel    = require('gulp-babel');
+const del      = require('del').sync;
+const execSync = require('child_process').execSync;
 
 const srcFiles = ['index.js', 'code/**/*.js'];
 
@@ -22,25 +23,39 @@ gulp.task('src', () => {
 	gulp.src('code/**/*.js')
 		.pipe(babel())
 		.pipe(gulp.dest('./build/code'));
-
-	gulp.watch(srcFiles, watchOpts, ['src']);
 });
 
-// 'code/**/*.js'
-
 gulp.task('defs', () => {
+	del(['./build/defs']);
 	gulp.src('./defs/*.json5')
 		.pipe(gulp.dest('./build/defs'));
 
-	gulp.watch('./defs/*.json5', watchOpts, ['defs']);
+});
+
+gulp.task('samples', () => {
+	del(['./build/defs']);
+
+	let output = execSync('git ls-files defs', { encoding: 'utf8' }),
+		files  = output
+			.trim()
+			.split("\n");
+
+	gulp.src(files)
+		.pipe(gulp.dest('./build/defs'));
+
 });
 
 gulp.task('infra', () => {
 	gulp.src('./package.json')
 		.pipe(gulp.dest('./build'));
+});
 
+gulp.task('default', ['src', 'defs', 'infra',], () => {
+	gulp.watch(srcFiles, watchOpts, ['src']);
+	gulp.watch('./defs/*.json5', watchOpts, ['defs']);
 	gulp.watch('./package.json', watchOpts, ['infra']);
 });
 
-gulp.task('default', ['src','defs','infra',], () => {
+gulp.task('release', ['src', 'samples', 'infra'], () => {
+
 });

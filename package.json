@@ -1,8 +1,8 @@
 {
   "name": "hain-plugin-psl",
-  "version": "0.0.1",
+  "version": "0.6.1",
   "keywords": [
-    "hain-0.5.0"
+    "hain-0.6.1"
   ],
   "hain": {
     "prefix": "",
@@ -10,6 +10,9 @@
     "icon": "#fa fa-bolt",
     "redirect": "https://github.com/cpriest/hain-plugin-psl",
     "group": ""
+  },
+  "scripts": {
+    "build": "gulp"
   },
   "dependencies": {
     "debug": "2.5",
@@ -19,5 +22,19 @@
     "request": "2.79",
     "vm2": "^3.1.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "babel-cli": "^6.6.0",
+    "babel-core": "^6.6.0",
+    "babel-loader": "^6.2.4",
+    "babel-preset-env": "^1.1.8",
+    "del": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-install": "^0.6.0",
+    "gulp-replace": "^0.5.4",
+    "gulp-shell": "^0.5.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-util": "^3.0.7",
+    "gulp-zip": "^3.2.0"
+  }
 }

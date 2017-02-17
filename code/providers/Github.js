@@ -6,51 +6,39 @@ const qs         = require('querystring');
 
 class GithubApi {
 	constructor(auth) {
-		this.req = require('request')
+		this.rp = require('request-promise-native')
 			.defaults({
-				gzip   : true,
-				jar    : true,
-				auth   : auth,
-				json   : true,
-				headers: {
+				gzip                   : true,
+				jar                    : true,
+				auth                   : auth,
+				json                   : true,
+				resolveWithFullResponse: true,
+				headers                : {
 					'Accept'    : 'application/vnd.github.v3+json',
 					'User-Agent': 'cpriest/hain-plugin-psl',
 				}
 			});
 	}
 
-	get(query) {
-		return new Promise((resolve, reject) => {
-			let results = [];
-			let queued  = 0;
+	async get(query) {
+		if(query.substr(0, 1) === '/')
+			query = 'https://api.github.com' + query;
 
-			let _get = (query) => {
-				if(query.substr(0, 1) === '/')
-					query = 'https://api.github.com' + query;
+		let res = await this.rp(query);
 
-				queued++;
-				this.req(query, (err, res, body) => {
-					if(!err && res.statusCode === 200) {
-						results = results.concat(body.items || body);
+		let nextPageURL = (res.headers.link || '')
+			.split(/,\s*/)
+			.reduce((acc, link) => {
+				if(link.indexOf('rel="next"') >= 0)
+					return link.match(/<(.+?)>/)[1];
+				return acc;
+			}, '');
+		if(nextPageURL) {
+			return (/** @type {object[]} */ res.body.items || /** @type {string} */ res.body)
+				.concat(await this.get(nextPageURL));
+		}
 
-						(res.headers.link || '')
-							.split(/,\s*/)
-							.find((link) => {
-								if(link.indexOf('rel="next"') >= 0) {
-									_get(link.match(/<(.+?)>/)[1]);
-									return true;
-								}
-							});
-
-						if(--queued === 0)
-							resolve(results);
-					} else {
-						reject({ err, res, body });
-					}
-				});
-			};
-			_get(query);
-		});
+		return res.body.items || res.body;
 	}
 }
 

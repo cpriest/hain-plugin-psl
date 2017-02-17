@@ -44,8 +44,8 @@ module.exports = (() => {
 				this.set(objProvider.id, objProvider);
 				return objProvider;
 			} catch(e) {
-				if(e.code === 'MODULE_NOT_FOUND')
-					e.message = `Unable to find provider module named '${def.type}' specified as type parameter for @${name} provider`;
+				if(e.code === 'MODULE_NOT_FOUND' && e.message.includes(def.type))
+					throw new Error(`Unable to find provider module named '${def.type}' specified as type parameter for ${def.type} provider`);
 				throw e;
 			}
 		}

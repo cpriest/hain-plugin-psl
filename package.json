@@ -15,26 +15,29 @@
 		"build": "gulp"
 	},
 	"babel":           {
-		"presets": [
+		"presets":    [
 			[
-				"env", {
-				"targets": {
-					"chrome": 54
+				"env",
+				{
+					"targets": {
+						"chrome": 54
+					}
 				}
-			}
 			]
 		],
 		"sourceMaps": "both"
 	},
 	"dependencies":    {
-		"debug":   "2.5",
-		"favicon": "0.0.2",
-		"glob":    "7.1.x",
-		"json5":   "0.5.x",
-		"request": "2.79",
-		"vm2":     "^3.1.0"
+		"debug":                  "2.5",
+		"favicon":                "0.0.2",
+		"glob":                   "7.1.x",
+		"json5":                  "0.5.x",
+		"request-promise-native": "^1.0.3",
+		"vm2":                    "^3.1.0"
 	},
 	"devDependencies": {
+		"@types/electron":  "^1.4.32",
+		"@types/node":      "^7.0.5",
 		"babel-cli":        "^6.6.0",
 		"babel-core":       "^6.6.0",
 		"babel-loader":     "^6.2.4",

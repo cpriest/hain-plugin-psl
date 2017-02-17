@@ -18,7 +18,8 @@
 8. ~~Extend pattern parameter substitution to full sandboxed template literal capability~~
 9. More generic setup for github providers, allowing for specification of API endpoint definitions
     (this essentially moves the github specific code into a definition file)
-12. ~~Partial pattern match w/ alt_description?~~
+10. Try out async/await
+11. ~~Partial pattern match w/ alt_description?~~
 
 # Research
 

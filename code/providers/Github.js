@@ -3,7 +3,6 @@
 //noinspection JSUnusedLocalSymbols
 const { indent } = require('../utils');
 const qs         = require('querystring');
-const { VM }     = require('vm2');
 
 class GithubApi {
 	constructor(auth) {
@@ -76,28 +75,22 @@ module.exports = (() => {
 		 *
 		 * @returns {Promise<object[]>}
 		 */
-		ResolveQueries(API) {
-			let AllResults = [];
-			let resolved   = this.def.queries.length;
-
-			return new Promise((resolve, reject) => {
-				for(let query of this.def.queries) {
-					API.get(`${this.def.uri}?per_page=100&q=` + qs.escape(query))
-						.then((results) => {
-							AllResults = AllResults.concat([...results]);
-							if(--resolved === 0)
-								resolve(AllResults);
-						})
-						.catch((err) => {
-							if(err instanceof Error) {
-								psl.log(err.stack);
-							} else {
-								psl.log(err);
-							}
-							psl.toast.enqueue('Failed to fetch results from Github, see debug log.');
-						});
-				}
-			});
+		async ResolveQueries(API) {
+			try {
+				return []
+					.concat(
+						...await Promise.all(
+							this.def.queries
+								.map(query =>
+									API.get(`${this.def.uri}?per_page=100&q=` + qs.escape(query))
+								)
+						)
+					);
+			} catch(e) {
+				psl.log('Failed to fetch results from Github:', e.stack || e);
+				psl.toast.enqueue('Failed to fetch results from Github, see debug log.');
+			}
+			return [];
 		}
 	}
 	return GithubProvider;

@@ -4,6 +4,7 @@ const gulp     = require('gulp');
 const babel    = require('gulp-babel');
 const del      = require('del').sync;
 const execSync = require('child_process').execSync;
+const sourcemaps = require('gulp-sourcemaps');
 
 const srcFiles = ['index.js', 'code/**/*.js'];
 
@@ -17,11 +18,15 @@ gulp.task('clean', () => {
 
 gulp.task('src', () => {
 	gulp.src(['index.js'])
+		.pipe(sourcemaps.init())
 		.pipe(babel())
+		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('./build'));
 
 	gulp.src('code/**/*.js')
+		.pipe(sourcemaps.init())
 		.pipe(babel())
+		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('./build/code'));
 });
 

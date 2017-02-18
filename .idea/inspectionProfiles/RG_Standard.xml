@@ -65,10 +65,11 @@
     <inspection_tool class="JSLastCommaInObjectLiteral" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JSMethodCanBeStatic" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JSUndefinedPropertyAssignment" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="JSUnresolvedExtXType" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JSUnresolvedVariable" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="myStrictlyCheckGlobalDefinitions" value="true" />
     </inspection_tool>
-    <inspection_tool class="JSUnusedGlobalSymbols" enabled="false" level="UNUSED ENTRY" enabled_by_default="false" />
+    <inspection_tool class="JSUnusedGlobalSymbols" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JSUnusedLocalSymbols" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myIgnoreUnusedFunctionParameters" value="true" />
     </inspection_tool>
@@ -99,11 +100,11 @@
     <inspection_tool class="PhpUndefinedVariableInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="IGNORE_INCLUDE" value="false" />
     </inspection_tool>
-    <inspection_tool class="PhpUnusedLocalVariableInspection" enabled="true" level="UNUSED ENTRY" enabled_by_default="true">
+    <inspection_tool class="PhpUnusedLocalVariableInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ENABLE_IN_FILE_SCOPE" value="true" />
       <option name="DONT_REPORT_INSIDE_LIST" value="true" />
     </inspection_tool>
-    <inspection_tool class="PhpUnusedParameterInspection" enabled="true" level="UNUSED ENTRY" enabled_by_default="true">
+    <inspection_tool class="PhpUnusedParameterInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="DONT_REPORT_ABSTRACT_CLASS" value="true" />
       <option name="DONT_REPORT_ANONYMOUS" value="true" />
       <option name="DONT_REPORT_PARAMETERS_COUNT_ACCESS" value="true" />

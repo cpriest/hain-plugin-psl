@@ -50,12 +50,26 @@ declare interface ProviderDefinition {
 	result:MatchDefinition;
 
 	/** Key/Value items which specify options for the provider */
-	options: ProviderOptions;
+	options?: ProviderOptions;
 }
 
 declare interface MatchlistProviderDefinition extends ProviderDefinition {
 	/** Options available to all Matchlist Providers */
-	options:MatchlistProviderOptions;
+	options?:MatchlistProviderOptions;
+
+	/** Options available to all Matchlist Providers for logging */
+	log?:MatchlistLogOptions;
+}
+
+declare interface MatchlistLogOptions {
+	/** Log raw results of sub-class */
+	results?: boolean;
+
+	/** Log final list of included items */
+	included?: boolean;
+
+	/** Log list of excluded items */
+	excluded?: boolean;
 }
 
 /** A single include/exclude rule which can be used to filter matchlist items (object hashes) */
@@ -90,4 +104,9 @@ declare interface MatchlistProviderOptions extends ProviderOptions {
 
 /** Options specific to FilesetProviders */
 declare interface FilesetProviderOptions extends MatchlistProviderOptions {
+}
+
+declare interface QueryableProviderDefinition extends MatchlistProviderDefinition {
+	/** The queries to submit against the Queryable API */
+	queries:string[];
 }

@@ -22,5 +22,7 @@
     <orderEntry type="library" name="electron-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="node-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="es6-promise-DefinitelyTyped" level="application" />
+    <orderEntry type="library" name="request-promise-native-DefinitelyTyped" level="application" />
+    <orderEntry type="library" name="request-DefinitelyTyped" level="application" />
   </component>
 </module>

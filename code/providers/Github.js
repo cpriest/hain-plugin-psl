@@ -46,6 +46,9 @@ class GithubApi {
 module.exports = (() => {
 	let { MatchlistProvider } = require('./Providers');
 
+	/**
+	 * @property {QueryableProviderDefinition} def
+	 */
 	class GithubProvider extends MatchlistProvider {
 		/**
 		 * Builds the matchlist according to what's queryable by the Github API

@@ -1,7 +1,12 @@
 'use strict';
 
 //noinspection JSUnusedLocalSymbols
-let { indent, ExpandEnvVars, EscapeMatchesForURNs, ResolveLiteral } = require('./utils.js');
+let {
+	indent,
+	ExpandEnvVars,
+	/** @type function */ EscapeMatchesForURNs,
+	ResolveLiteral
+} = require('./utils.js');
 const ResolveIcon                                                   = require('./util/IconResolver');
 
 let Patterns;

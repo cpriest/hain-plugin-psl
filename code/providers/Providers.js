@@ -77,11 +77,13 @@ module.exports = (() => {
 	 * Provides for generic regular expression matching of a query against a predefined "match list"
 	 * The this.Matchlist should be a Map who's keys are the list to match the query against.  The returned
 	 * results of the matches() function will be the values for all keys that matched the query.
+	 *
+	 * @property {MatchlistProviderDefinition} def
 	 */
 	class MatchlistProvider extends Provider {
 		/**
 		 * @constructor
-		 * @param {ProviderDefinition} def
+		 * @param {MatchlistProviderDefinition} def
 		 */
 		constructor(def) {
 			super(def);

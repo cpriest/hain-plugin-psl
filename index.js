@@ -33,8 +33,8 @@ module.exports = (pluginContext) => {
 
 	const ResolveIcon = require('./code/util/IconResolver');
 
-	/** @type Map */
-	let { Patterns } = require('./code/Patterns.js');
+
+	let { /** @type Map */ Patterns } = require('./code/Patterns.js');
 
 	/**
 	 * Called when the plugin is first loaded

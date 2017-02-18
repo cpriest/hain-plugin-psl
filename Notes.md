@@ -18,7 +18,7 @@
 8. ~~Extend pattern parameter substitution to full sandboxed template literal capability~~
 9. More generic setup for github providers, allowing for specification of API endpoint definitions
     (this essentially moves the github specific code into a definition file)
-10. Try out async/await
+10. ~~Try out async/await - love it!~~
 11. ~~Partial pattern match w/ alt_description?~~
 
 # Research
@@ -46,18 +46,10 @@
 4. ~~Get gulp / babel going to build the app so we can use newer features~~
 5. Allow for any properties (future proof to some extent) to be resolved contained within result definition
 6. ~~Remove custom 'title' from github provider, roll into standard resolution of result~~
+7. Validate definitions as they are loaded to ensure required properties are present
 
 # Refactoring
 
-1. ~~Separate out Pattern vs Patterns w/ Providers into different classes (Provider Patterns have much more code)~~
-2. ~~Perhaps move PCRE Matching of {string\[\]} to a utility function~~
-3. ~~Notion of 'Replacables' no longer valid since sandboxing?~~
-4. ~~Move ExpandVars into Utils~~
-5. Switch to import * from * rather than require?
-6. ~~Have MatchlistProvider call this.BuildMatchlist() from it's own constructor, then FilesetProvider won't need it's own constructor just for that.~~
-7. ~~Better .id for Patterns than the pattern (possibly cleaned up pattern)...~~
-8. ~~Better way of handling setTimeout() code in ProviderPattern (via event emission)~~
-9. ~~Eliminate pluginContext, PluginDir being passed everywhere~~
 
 
 # Ideas

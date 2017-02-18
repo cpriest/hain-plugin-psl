@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require("path");
-const Glob = require("glob").Glob;
+const globSync   = require('glob').sync;
 
 //noinspection JSUnusedLocalSymbols
 let { indent } = require('../utils');
@@ -9,47 +9,44 @@ let { indent } = require('../utils');
 module.exports = (() => {
 	let { Providers, MatchlistProvider } = require('./Providers');
 
+	/**
+	 * @property {FilesetProviderDefinition} def
+	 **/
 	class FilesetProvider extends MatchlistProvider {
+
 		/**
 		 * Builds the fileset according to the definition, called by parent class
 		 */
-		BuildMatchlist() {
-			let Remaining = (this.def.glob || []).length;
+		async BuildMatchlist() {
+			let _glob = async(pattern, filters) => {
+				let globBasepath = this.FindBasepath(pattern);
 
-			return new Promise((resolve, reject) => {
-				for(let globPattern of this.def.glob || []) {
-					let globBasepath = this.FindBasepath(globPattern);
-					let AllResults = [ ];
+				return await
+					globSync(pattern)
+						.filter((filepath) =>
+							filters.find((filter) =>
+								!filepath.match(new RegExp(filter))
+							))
+						.map((filepath) => {
+							let shortPath  = filepath.replace(globBasepath, ''),
+								parsedPath = path.parse(shortPath),
+								title      = `${shortPath.replace(parsedPath.ext, '')}`;
 
-					new Glob(globPattern, (/** string[] */err, /** string[] */ matches) => {
-						AllResults.push(
-							...matches
-								.filter((filepath) => {
-									for(let filter of this.def.filters || []) {
-										if(filepath.match(new RegExp(filter)))
-											return false;
-									}
-									return true;
-								})
-								.map((filepath) => {
-									let shortPath = filepath.replace(globBasepath, ''),
-										r         = path.parse(shortPath),
-										title     = `${shortPath.replace(r.ext, '')}`;
+							return {
+								path : filepath,
+								title: title,
+								dir  : parsedPath.dir,
+								base : parsedPath.base,
+								ext  : parsedPath.ext,
+								name : parsedPath.name,
+							};
+						});
+			};
 
-									return {
-										path : filepath,
-										title: title,
-										name : r.name,
-										base : r.base,
-									};
-								})
-						);
-					}).on('end', (matches) => {
-						if(--Remaining === 0)
-							resolve(AllResults);
-					});
-				}
-			});
+			return [].concat(...await Promise.all(
+				this.def.glob
+					.map((pattern) => _glob(pattern, this.def.filters))
+			));
 		}
 
 		/**

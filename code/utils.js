@@ -109,7 +109,7 @@ module.exports = class Util {
 	static ResolveLiteral(literal, sandbox = {}) {
 		try {
 			let vm = new VM({
-				timeout: 25,
+				timeout: 50,
 				sandbox: sandbox,
 			});
 

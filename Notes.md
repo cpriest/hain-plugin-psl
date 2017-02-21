@@ -59,8 +59,8 @@
 
 # Hain Ideas
 
-1. Using global shortcut key while hain is open should not close hain
-2. Hain is not protected from invalid / exception causing synchronous query
+1. ~~Using global shortcut key while hain is open should not close hain~~
+2. ~~Hain is not protected from invalid / exception causing synchronous query~~
 3. Allow for compiled version of hain to still access debugger
 4. ~~Improve log() function passed into plugins work as well as console.log (might require plugin-side library)~~
     a. Alternatively, a way to "hook-up" the plugins thread to the main application debugger??
@@ -68,4 +68,5 @@
 6. Moving hain plugins to be in < webform > elements of main UI, they would still be run in their own processes but
     would be able to use electron utilities, they would also still be isolated from the main server, in addition they
     would be isolated from each other.  Per @appetizermonster it would probably take a lot of re-working of the code.
+7. Pressing Esc to close hain causes strange window behavior - **Maybe no longer an issue**
 

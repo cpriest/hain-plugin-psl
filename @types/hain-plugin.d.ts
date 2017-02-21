@@ -3,6 +3,7 @@
 // Definitions by: Clint Priest <https://github.com/cpriest>
 
 type milliseconds = number;
+type bitfield = number;
 
 /**
  * @see https://github.com/simonlast/node-persist
@@ -91,10 +92,11 @@ declare namespace hain {
 		 * (Optional)
 		 * This function will be invoked when user executes a Result you send in the search function.
 		 *
-		 * @param id		id of the selected {SearchResult} or {IndexedResult}
-		 * @param payload	payload of the selected {SearchResult} or {IndexedResult}
+		 * @param id        id of the selected {SearchResult} or {IndexedResult}
+		 * @param payload   payload of the selected {SearchResult} or {IndexedResult}
+		 * @param extra		Contains extra information passed from hain when the execute event ocurred
 		 */
-		execute(id:any, payload:any): void;
+		execute(id:any, payload:any, extra:ExecuteData): void;
 
 		/**
 		 * (Optional)
@@ -105,6 +107,47 @@ declare namespace hain {
 		 * @param render	 Call this function with html to be rendered in the preview area
 		 */
 		renderPreview(id:any, payload:any, render:(html:string) => void): void;
+	}
+
+	export interface ExecuteData {
+		keys: ExecuteKeyData;
+	}
+
+	export interface ExecuteKeyData {
+		/** True if the alt was pressed along with execute key/click */
+		altKey:boolean;
+
+		/** True if the ctrl was pressed along with execute key/click */
+		ctrlKey:boolean;
+
+		/** True if the shift was pressed along with execute key/click */
+		shiftKey: boolean;
+
+		/** True if the meta was pressed along with execute key/click */
+		metaKey: boolean;
+
+		/**
+		 * A bit field containing the state of all four modifier keys
+		 *
+		 * | Bit | Modifier  |
+		 * |-----|-----------|
+		 * | 1   | ctrlKey   |
+		 * | 2   | altKey    |
+		 * | 4   | shiftKey  |
+		 * | 8   | metaKey   |
+		 *
+		 * @example: The ctrl + shift keys were being pressed (and no others), then modifierBitfield = (1 + 4) = 5
+		 * @example: The alt key was being pressed (and no others), then modifierBitfield = 2
+		 * @example: Check that the shift key was being pressed (regardless of others), then (modifierBitfield & 4) > 0
+		 **/
+		modifierBitfield:KeyBitfield;
+	}
+
+	export enum KeyBitfield {
+		CTRL = 1,
+		ALT = 2,
+		SHIFT = 4,
+		META = 8,
 	}
 
 	/**

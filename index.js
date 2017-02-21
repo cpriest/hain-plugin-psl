@@ -70,10 +70,11 @@ module.exports = (pluginContext) => {
 	/**
 	 * Executes the given cmd that was accepted by the user
 	 *
-	 * @param {string} cmd
-	 * @param {*} payload
+	 * @param cmd       id of the selected {SearchResult} or {IndexedResult}
+	 * @param payload   payload of the selected {SearchResult} or {IndexedResult}
+	 * @param extra     Contains extra information passed from hain when the execute event ocurred
 	 */
-	function execute(cmd, payload) {
+	function execute(cmd, payload, extra) {
 		if(cmd.match(/^[\w\d]+:\/\//))
 			psl.shell.openItem(cmd);
 		else

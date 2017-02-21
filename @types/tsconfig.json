@@ -1,14 +1,25 @@
 {
+	"include": [
+		"./@types/*.ts"
+	],
+	"exclude": [
+
+	],
 	"compilerOptions": {
-		"module":           "es2015",
+		"module":           "es6",
 		"lib":              [
-			"es2015"
+			"es7","es2015.promise","dom"
 		],
 		"noImplicitAny":    true,
 		"noImplicitThis":   true,
 		"strictNullChecks": true,
-		"baseUrl":          "../",
+//		"baseUrl":          "../",
 		"types":            [],
-		"noEmit":           true
+		"noEmit":           false,
+		"outDir":           "./",
+		"pretty":           true,
+		"listEmittedFiles": true,
+		"alwaysStrict":     true
+
 	}
 }
